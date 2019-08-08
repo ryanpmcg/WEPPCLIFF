@@ -2,6 +2,7 @@
 ############################## PROGRAM METADATA #############################
 #############################################################################
 
+#  Version: 1.0 (the initial public release)
 #  Last Updated by: Ryan P. McGehee
 #  Last Updated on: 8 August 2019
 #  Purpose: This program was first designed to create an appropriate input
