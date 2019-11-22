@@ -12,9 +12,9 @@ authors:
     orcid: 0000-0003-0464-9774
     affiliation: "1, 2"
   - name: Dennis C. Flanagan
-    affiliation: "1, 2"
+    affiliation: "2, 1"
   - name: Puneet Srivastava
-    affiliation: 3
+    affiliation: "3"
 affiliations:
  - name: Purdue University
    index: 1
