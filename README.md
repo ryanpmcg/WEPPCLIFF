@@ -8,7 +8,7 @@ Version 1.4 is the most recent upload to this repository. Version 1.4 focused on
 Zip files (corresponding to software version) contain code, documentation, and example files needed for a new installation on Windows or OSX. Linux installation is also possible (and should be relatively simple), but no support is provided in the documentation.
 
 # RUN TUTORIALS
-In order to run the AutoTutorial on a Mac, change the directory in AutoTutorial.sh to where you have WEPPCLIFF.R unzipped on your machine. Then type: "bash <path>/AutoTutorial.sh" in your terminal. In order to run on Windows, make sure that the directory structure matches that in the Tutorial.txt file or change the paths in AutoTutorial.bat to where you have installed Rscript.exe and WEPPCLIFF.R. Then double-click on AutoTutorial.bat.
+In order to run the AutoTutorial on a Mac, change the directory in AutoTutorial.sh to where you have WEPPCLIFF.R unzipped on your machine. Then type: "bash path_to_AutoTutorial_here/AutoTutorial.sh" in your terminal. In order to run on Windows, make sure that the directory structure matches that in the Tutorial.txt file or change the paths in AutoTutorial.bat to where you have installed Rscript.exe and WEPPCLIFF.R. Then double-click on AutoTutorial.bat.
 
 # CONTRIBUTIONS
 Contributions are welcomed. Any contributors that materially improve performance, capabilities, accuracy, compatibility, etc. will be given appropriate credit and ownership of their code. All contributions that are to be distributed as "WEPPCLIFF" must be approved by the original copyright holder, Ryan P. McGehee.
