@@ -58,18 +58,6 @@ design, and support for Astropy functionality in ``Gala`` will enable exciting
 scientific explorations of forthcoming data releases from the *Gaia* mission
 [@gaia] by students and experts alike.
 
-
-# Citations
-
-Citations to entries in paper.bib should be in
-[rMarkdown](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
-format.
-
-For a quick reference, the following citation commands can be used:
-- `@author:2001`  ->  "Author et al. (2001)"
-- `[@author:2001]` -> "(Author et al., 2001)"
-- `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"
-
 # Acknowledgements
 
 We acknowledge contributions from Brigitta Sipocz, Syrtis Major, and Semyeong
