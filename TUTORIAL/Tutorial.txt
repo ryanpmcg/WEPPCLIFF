@@ -5,7 +5,7 @@
 METADATA:
 
 	Author:		Ryan P. McGehee
-	Modified:	18 November 2019
+	Modified:	26 November 2019
 
 PURPOSE:
 
@@ -39,7 +39,8 @@ WARNING:
 
 REQUIREMENTS:
 
-	The following directory structure and content must be present for this
+	You must have already installed R (version 3.6.1 or later) and the
+	following directory structure and content must be present for this
 	tutorial to work:
 
 	C:/ ----+
@@ -72,13 +73,11 @@ REQUIREMENTS:
 
 NOTES:
 
-	As of WEPPCLIFF Version 1.0 gap-filling and quality checking routines
-	were included in the source code for further testing. As of Version 1.4,
-	gap filling was determined to be satisfactory for public release with
-	only some issues needing more attention (namely storm characteristics).
-	Quality checking is performed in two major phases: hard physical limits
-	and data driven limits. The hard physical limits were ready for release,
-	but the data driven limits needed some additional attention.
+	As of WEPPCLIFF Version 1.4 automated gap filling and quality checking
+	routines were determined to be satisfactory for publication, but they
+	are not perfect. In the near future, these routines will be evaluated
+	and published in scientific literature to provide a more complete
+	understanding of their capabilities and limitations.
 
 	KEEP THESE NOTES IN MIND FOR UNDERSTANDING THE CURRENT CAPABILITIES OF
 	WEPPCLIFF AS WELL AS THOSE TO BE INCLUDED IN FUTURE RELEASES.
