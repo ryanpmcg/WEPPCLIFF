@@ -7,6 +7,7 @@ cd $DIRECTORY
 cd ..
 
 Rscript --vanilla WEPPCLIFF.R --args -fr t -la y
+Rscript --vanilla WEPPCLIFF.R --args -fr t
 
 Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y
 
