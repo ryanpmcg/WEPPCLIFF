@@ -1,10 +1,10 @@
-SET %PathToRscript%="C:/Program Files/R/R-3.6.1/bin/Rscript.exe"
 
 cd ..
 
 %PathToRscript% --vanilla WEPPCLIFF.R --args -fr t
 
 %PathToRscript% --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv
+%PathToRscript% --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y
 
 %PathToRscript% --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -fn bpt -la y -verb t
 
