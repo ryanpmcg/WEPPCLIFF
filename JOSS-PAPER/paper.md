@@ -34,28 +34,16 @@ It appears that the lack of sufficient software in this field has resulted in mo
 
 In short, the erosion modeling community is in need of software that can at least shoulder most of the burden when preparing climate inputs for soil loss models. Therefore, we are proposing a WEPP CLImate File Formatter (WEPPCLIFF) program to begin addressing this need.
 
-``WEPPCLIFF`` is an R-based command line tool which was originally designed to prepare climate inputs for WEPP that has been extended to perform other general functions such as quality checking, gap filling, and erosion index calculations (climate inputs for the USLE family of models). The program is also provided with extensive accompanying documentation which covers a range of topics including most notably: installation, syntax, input, output, and examples.
+``WEPPCLIFF`` is an R-based command line tool which was originally designed to prepare 'breakpoint format' climate file inputs for WEPP (Figure 1) that has been extended to perform other general functions such as quality checking, gap filling, and erosion index calculations (climate inputs for the USLE family of models). The program is also provided with extensive accompanying documentation which covers a range of topics including most notably: installation, syntax, input, output, and examples.
 
-# Citations
+![An example 'breakpoint format' climate input file for WEPP which was produced by a single command in WEPPCLIFF. The header and body are highlighted in light orange and light blue, respectively.](KMQE_CLI_FILE_COLOR.png)
 
-[@hollinger:2002]
-[@mcgehee:2018]
-[@mcgregor:1995]
-[@noaa:2014]
-[@usda:1995]
-[@usda:2013]
-[@usda:2019]
-[@renard:1997]
-[@srivastava:2019]
-[@vanbuuren:2011]
-[@wischmeier:1965]
-[@wischmeier:1978]
+# Existing Software
 
-# Acknowledgements
+The only related software of which we are aware is a publicly distributed executable program called Rainfall Instensity Summarization Tool (RIST) [@USDA:2019]. RIST is currently maintained by the USDA ARS National Sedimentation Laboratory (NSL) where it can be used as a tool to prepare climate inputs for RUSLE, WEPP, SWAT, and AnnAGNPS. However, the WEPP inputs for example, are only provided in the 'tp-ip' file format rather than the 'breakpoint' file format which means that only the intensity-at-peak factor, time-to-peak factor, and daily precipitation amount are actually provided to WEPP to fit a double exponential storm distribution and finally generate breakpoints for erosion calculations. Therefore, much of the observed data is being discarded when providing 'observed climate inputs' to WEPP using RIST. WEPPCLIFF, on the other hand, maintains the original precipitation breakpoints in its climate file output thereby providing more valuable climate inputs to WEPP.
 
-This work was supported primarily by funding through USDA ARS and resources at
-Purdue University, which were used to develop and refine the program. Critical
-knowledge and experience gained during Ryan's MS Thesis study at Auburn
-University was also a significant factor in the success of the project.
+# Validation
+
+WEPPCLIFF was developed from and validated by comparing to several different works including: three Agriculture Handbooks (AH282 [@Wischmeier:1965], AH537 [@Wischmeier:1978], and AH703 [@Renard:1997]), two peer-reviewed articles [@McGehee:2018; @McGregor:1995], and RIST [@USDA:2019]. The comparison with RIST is of particular interest since this was completed as part of a massive WEPP-RUSLE2 model comparison project between the NSERL and NSL ARS laboratories. This project resulted in several important findings related to climate representations in both models (WEPP and RUSLE2), their accompanying input generation softwares (CLIGEN, RIST, and now WEPPCLIFF), and the impacts on erosion predictions. An example comparison related to WEPPCLIFF found that RIST (April 2019 release version) erroneously calculated kinetic energy and RUSLE2 erosion indices to be 26% and 21% too low, respectively. RIST was updated with more correct calculations in May 2019 (there are still differences of about 3% for the stations compared), but RIST has been actively used since 2006 with several scientific works, and this error may have impacted several or all of those works. More comprehensive summaries of findings from this comparison project are expected to be published in scientific literature in the near future.
 
 # References
