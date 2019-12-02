@@ -36,13 +36,13 @@ In short, the erosion modeling community is in need of software that can at leas
 
 ``WEPPCLIFF`` is an R-based command line tool which was originally designed to prepare 'breakpoint format' climate file inputs for WEPP (Figure 1) that has been extended to perform other general functions such as quality checking (Figures 2 and 3), gap filling (Figure 4), and erosion index calculations (climate inputs for the USLE family of models). The program is also provided with extensive accompanying documentation which covers a range of topics including most notably: installation, syntax, input, output, and examples.
 
-![Example 'breakpoint format' climate input file for WEPP](KMQE CLI FILE COLOR.png)
+![Example 'breakpoint format' climate input file for WEPP](KMQE_CLI_FILE_COLOR.png)
 
-![Example quality checked input timeseries](KMQE WIND VELOCITY INPUT TS.png)
+![Example quality checked input timeseries](KMQE_WIND_VELOCITY_INPUT_TS.png)
 
-![Example quality checked input histogram](KMQE WIND VELOCITY INPUT HIST.png)
+![Example quality checked input histogram](KMQE_WIND_VELOCITY_INPUT_HIST.png)
 
-![Example gap-filled daily output timeseries](KMQE WIND VELOCITY DAILY TS.png)
+![Example gap-filled daily output timeseries](KMQE_WIND_VELOCITY_DAILY_TS.png)
 
 # Existing Software
 
