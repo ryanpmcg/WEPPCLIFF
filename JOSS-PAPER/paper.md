@@ -22,8 +22,9 @@ affiliations:
    index: 2
  - name: Auburn University
    index: 3
-date: 22 November 2019
+date: 2 December 2019
 bibliography: paper.bib
+---
 
 # Summary
 
