@@ -1,9 +1,11 @@
+dir "C:\Program Files\R" /s /b | find "bin\Rscript.exe" > set %PathToRscript%
 
 cd ..
 
 %PathToRscript% --vanilla WEPPCLIFF.R --args -fr t
 
 %PathToRscript% --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv
+
 %PathToRscript% --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y
 
 %PathToRscript% --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -fn bpt -la y -verb t
