@@ -2,7 +2,7 @@
 DIR "C:\Program Files\R" /s /b | FIND "bin\Rscript.exe" > TMP.txt
 SET /p PathToRscript=<TMP.txt
 DEL TMP.txt
-cd ..
+CD ..
 
 CLS
 ECHO Verifying WEPPCLIFF installation. This test will only take a couple minutes and & ECHO will begin in a few seconds. Please check back momentarily for the results. & ECHO.
