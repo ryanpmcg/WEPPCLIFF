@@ -6,7 +6,7 @@ CD ..
 
 CLS
 ECHO Verifying WEPPCLIFF installation. This test will only take a couple minutes and & ECHO will begin in a few seconds. Please check back momentarily for the results. & ECHO.
-TIMEOUT 2
+TIMEOUT 10
 
 "%PathToRscript%" --vanilla WEPPCLIFF.R --args -o AUTOTEST/OUTPUT -e AUTOTEST/OUTPUT -fn AutoTest.1 -f ASOS_BPT_KMQE.csv -la y -verb t -ed 1
 "%PathToRscript%" --vanilla WEPPCLIFF.R --args -o AUTOTEST/OUTPUT -e AUTOTEST/OUTPUT -fn AutoTest.2 -f AH537_BPT_CP.csv -cp t -u m PRECIP -sm 2 -la y -verb t -ei t -ee ARS -ipb t -pd t -ed 1
@@ -22,4 +22,5 @@ REM ECHO Running checksum tests. Almost done... & ECHO.
 REM SET FAIL=0
 REM FOR /L %%ITER IN (1,1,8)
 REM	DO ()
+REM FC C:\GITHUB\WEPPCLIFF\AUTOTEST\BENCHMARKS\AutoTest.1.cli C:\GITHUB\WEPPCLIFF\AUTOTEST\OUTPUT\AutoTest.1.cli
 REM if %FAIL%==0 (ECHO. & ECHO CONGRATULATIONS! Your WEPPCLIFF installation was successfully verified by 8 & ECHO automated test runs and 16 highly unique file outputs. Now you are ready to use & ECHO WEPPCLIFF with peace of mind, knowing everything is working as intended. & ECHO ) else (ECHO OOPS! Something is not right. Your WEPPCLIFF installation failed at least one & ECHO of 8 automated test runs. Please remove and reinstall WEPPCLIFF then try this & ECHO test again. If the problem persists and you believe the problem lies within & ECHO WEPPCLIFF, please create an issue at: https://github.com/ryanpmcg/WEPPCLIFF & ECHO  & ECHO Thank you! Hopefully the WEPPCLIFF community can help you get up and running & ECHO soon. & ECHO.)
