@@ -473,6 +473,7 @@ create_duration_data = function(data, x) {
     if (length(na.omit(data[[j]][[dt_list[j]]])) == 0) {stop("Datetime data may not be handled correctly. Please check the input file(s) and arguments.")}
     if (length(na.omit(data[[j]][[dt_list[j]]])) > 0) {
       data[[j]][[dt_list[j]]] = as.POSIXct(as.character(data[[j]][[dt_list[j]]]), format = dtf_list[j])
+      data[[j]][[dt_list[j]]] = as.POSIXct(as.character(data[[j]][[dt_list[j]]]), format = dtf_list[j], tz = "GMT")
       data[[j]] = data[[j]][complete.cases(data[[j]][,1]),]}
     
     # Handle precipitation and non-precipitation breaks.
@@ -517,6 +518,7 @@ modify_midnight_breakpoints = function(df, dtf) {
 
   # Calculate time from midnight.
   df$TFM = sapply(as.POSIXlt(as.character(df$DT_1), format = dtf), function(x) x$hour * 60 + x$min  + x$sec / 60)
+  df$TFM = sapply(as.POSIXlt(as.character(df$DT_1), format = dtf, tz = "GMT"), function(x) x$hour * 60 + x$min  + x$sec / 60)
 
   # Compare time from midnight to break duration.
   dif.vec = df$TFM - df$DUR
@@ -1029,6 +1031,7 @@ start_of_year = function(date) {
   
   # Determine the actual start and setup rounded times.
   real.start = as.POSIXlt(date, format = dtf1)
+  real.start = as.POSIXlt(date, format = dtf1, tz = "GMT")
   good.start = real.start
   month.start = real.start
   day.start = real.start
@@ -1071,6 +1074,7 @@ end_of_year = function(date) {
   
   # Determine the actual end and setup rounded times.
   real.end = as.POSIXlt(date, format = dtf1)
+  real.end = as.POSIXlt(date, format = dtf1, tz = "GMT")
   good.end = real.end
   month.end = real.end
   day.end = real.end
@@ -1194,6 +1198,7 @@ calculate_erosion_indices = function(data, storm.list, storm.df) {
   ke.df = list.cbind(ke.list)
   ei.df = list.cbind(ei.list)
   sp.df = as.data.frame(cbind(format(as.POSIXct(dtimes, origin = "1970-01-01")), depth, dur, pdur, pdur/dur, ip, tp, itw, idw, i30))
+  sp.df = as.data.frame(cbind(format(as.POSIXct(dtimes, origin = "1970-01-01"), tz = "GMT"), depth, dur, pdur, pdur/dur, ip, tp, itw, idw, i30))
   names(sp.df) = c("DT", "DEPTH", "DUR", "PDUR", "PRATIO", "PEAKINT", "PEAKTIME", "TIME_WM_INT", "DEPTH_WM_INT", "I30")
   
   # Calculate storm antecedent times.
@@ -1321,6 +1326,7 @@ process_precip_data = function(data, pcp.in, dly.ts, mly.ts, yly.ts, mly.mn) {
   
   # Remove the first precipitation event if it occurs at midnight.
   first.dt = as.numeric(unlist(as.POSIXlt(data[[pcp.in]]$DT_1[1])))
+  first.dt = as.numeric(unlist(as.POSIXlt(data[[pcp.in]]$DT_1[1], tz = "GMT")))
   first.dur = data[[pcp.in]]$DUR[1]
   first.time = first.dt[3] * 60 + first.dt[2] + first.dt[1]/60
   if (first.dur >= first.time) {data[[pcp.in]] = data[[pcp.in]][-1,]}
@@ -1552,6 +1558,7 @@ fill_data = function(data, pcp.ts.in, dly.ts.in, dly.ts.out, pcp.ts.out) {
     
     # Add known daily information to the filled positions.
     for (i in 1:length(empty.days)) {fil.ts.list[[empty.days[i]]][,1] = as.POSIXct(as.character(date.match[empty.days[i]]), format = "%Y%m%d")}
+    for (i in 1:length(empty.days)) {fil.ts.list[[empty.days[i]]][,1] = as.POSIXct(as.character(date.match[empty.days[i]]), format = "%Y%m%d", tz = "GMT")}
     for (i in 1:length(empty.days)) {fil.ts.list[[empty.days[i]]][,2] = date.match[empty.days[i]]}
     for (i in 1:length(empty.days)) {fil.ts.list[[empty.days[i]]][,3] = cluster.match[empty.days[i]]}}
   
@@ -1577,6 +1584,7 @@ fill_data = function(data, pcp.ts.in, dly.ts.in, dly.ts.out, pcp.ts.out) {
   if (toupper(verb) == "T") {cat(lr,"Returning imputed data...")}
   imp.ts.df$DT_1 = paste(pcp.ts.df$YYYYMMDD, " ", imp.ts.df$HOUR, ":", imp.ts.df$MINUTE, ":", imp.ts.df$SECOND, sep = "")
   imp.ts.df$DT_1 = as.POSIXct(imp.ts.df$DT_1, format = "%Y%m%d %H:%M:%S")
+  imp.ts.df$DT_1 = as.POSIXct(imp.ts.df$DT_1, format = "%Y%m%d %H:%M:%S", tz = "GMT")
   imp.ts.df = imp.ts.df[,c(7, 2:3)]
   
   # Change duplicated times.
@@ -1674,6 +1682,7 @@ create_cluster_col = function(in.df, dt.col.name, dt.format) {
   
   # Prepare clustering vectors.
   dts = as.POSIXlt(fill.seq, format = "%Y%m%d")
+  dts = as.POSIXlt(fill.seq, format = "%Y%m%d", tz = "GMT")
   dys = as.numeric(format(dts, "%Y%m%d"))
   mns = as.numeric(substr(dys, 5, 6))
   qtr = as.numeric(substr(dys, 7, 8))
@@ -2279,6 +2288,8 @@ create_cli_file = function(data, header, export) {
     end.loc = max(which(pcp_df$SID == sid))
     start = as.POSIXct(as.Date(pcp_df$DT_1[storm.loc]), format = "%Y-%m-%d")
     end = as.POSIXct(as.Date(pcp_df$DT_1[end.loc]), format = "%Y-%m-%d")
+    start = as.POSIXct(as.Date(pcp_df$DT_1[storm.loc]), format = "%Y-%m-%d", tz = "GMT")
+    end = as.POSIXct(as.Date(pcp_df$DT_1[end.loc]), format = "%Y-%m-%d", tz = "GMT")
     daily.start = as.numeric(format(as.Date(start, format = "%Y-%m-%d"), format = "%Y%m%d"))
     daily.end = as.numeric(format(as.Date(end, format = "%Y-%m-%d"), format = "%Y%m%d"))
     
