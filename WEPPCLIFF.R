@@ -2424,7 +2424,6 @@ core_workflow = function(file) {
   data = preserve_missing_data(data, x)
   data = create_duration_data(data, x)
   data = convert_units(data)
-  print(data[[3]][1:100,])
   data = initialize_qc_data(data)
   if (toupper(qc) == "T"){data = quality_check_inputs(data)}
   data = trim_data(data, 5, 6, 7, 8)
