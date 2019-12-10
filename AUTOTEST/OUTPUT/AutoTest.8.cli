@@ -1,0 +1,23 @@
+ 0.0
+   2   1   1
+   Station: AH537_15MIN
+ Latitude Longitude Elevation (m) Obs. Years   Beginning Year  Years Simulated 
+   0.0000    0.0000       0.00          NA           1999               0
+ Observed monthly ave max temperature (C)
+  30.0    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+ Observed monthly ave min temperature (C)
+  20.0    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+ Observed monthly ave solar radiation (Langleys/day)
+ 413.0    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+ Observed monthly ave precipitation (mm)
+  33.0    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+  Day Month Year  Breaks  T-Max  T-Min   Rad   W-Vel  W-Dir  T-Dew
+                    (#)    (C)    (C)   (L/d)  (m/s)  (Deg)   (C) 
+   1    1  2000      7    30.0   20.0  413.0    1.0    0.0   15.0 
+ 4.000   0.00 
+ 4.250   0.76 
+ 4.500   5.08 
+ 4.750  20.32 
+ 5.000  30.99 
+ 5.250  31.75 
+ 5.500  33.02
