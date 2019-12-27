@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 
 ################################################################################
@@ -35,15 +35,13 @@ FAILURE=("\n
 	Thank you! Hopefully the WEPPCLIFF community can help you get up and running\n
 	soon.\n")
 
-CLEARSCREEN=("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
-
 
 ################################################################################
 ###############################  RUN WEPPCLIFF  ################################
 ################################################################################
 
-echo -e $CLEARSCREEN
-echo -e $TEST
+clear
+echo $TEST
 sleep 10
 
 Rscript --vanilla WEPPCLIFF.R --args -o $DIRECTORY/OUTPUT -e $DIRECTORY/OUTPUT -fn AutoTest.1 -f ASOS_BPT_KMQE.csv -la y -verb t -ed 1
@@ -60,8 +58,8 @@ Rscript --vanilla WEPPCLIFF.R --args -o $DIRECTORY/OUTPUT -e $DIRECTORY/OUTPUT -
 #############################  RUN CHECKSUM TEST  ##############################
 ################################################################################
 
-echo -e $CLEARSCREEN
-echo -e $CHECKSUM
+clear
+echo $CHECKSUM
 FAIL=0
 
 for ITER in {1..8}
@@ -97,7 +95,7 @@ for ITER in {1..8}
 ################################################################################
 
 if [ $FAIL == 0 ]; then
-	echo -e $SUCCESS
+	echo $SUCCESS
 else
-	echo -e $FAILURE
+	echo $FAILURE
 fi
