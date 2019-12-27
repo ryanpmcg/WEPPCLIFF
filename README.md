@@ -10,6 +10,9 @@ Open Terminal and type the following: bash path_to_AutoTutorial_here/AutoTutoria
 # Run Automated Tutorial on Windows
 Open Command Prompt and type the following: path_to_AutoTutorial_here/AutoTutorial.bat
 
+# Run Automated Test (Installation Validation)
+Open Terminal or Command Prompt similar to above and substitute the path to AutoTest.sh or AutoTest.bat (these scripts are located in the AUTOTEST folder).
+
 # Current Version
 Version 1.4 is the most recent upload to this repository. Version 1.4 focused on improvements to basic trimming operations, quality checking, and data export. Future versions are attempting to focus on ways to improve the gap filling model. The current model works well for most aspects of the climate outputs, but there is room for improvement. The current wish list includes adding rates of change and more storm characteristics to the gap filling model.
 
