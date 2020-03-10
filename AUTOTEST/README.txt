@@ -1,6 +1,6 @@
 Author: Ryan McGehee
 Created: 9 December 2019
-Purpose: Describe contents of the folder 'TEST'
+Purpose: Describe contents of the folder 'AUTOTEST'
 
 
 Content:
