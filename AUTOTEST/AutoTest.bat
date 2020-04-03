@@ -5,7 +5,7 @@ DEL TMP.txt
 CD ..
 
 CLS
-ECHO Verifying WEPPCLIFF installation. This test will only take a couple minutes and & ECHO will begin in a few seconds. Please check back momentarily for the results. & ECHO.
+ECHO Verifying WEPPCLIFF installation (i.e. if you have not completed installation & ECHO this test will fail). This test will only take a couple minutes to finish and & ECHO will begin in a few seconds. Please check back momentarily for the results. & ECHO.
 TIMEOUT 10
 
 "%PathToRscript%" --vanilla WEPPCLIFF.R --args -o AUTOTEST/OUTPUT -e AUTOTEST/OUTPUT -fn AutoTest.1 -f ASOS_BPT_KMQE.csv -la y -verb t -ed 1
