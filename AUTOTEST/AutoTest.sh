@@ -15,7 +15,8 @@ cd ..
 ################################################################################
 
 TEST=("\n
-	Verifying WEPPCLIFF installation. This test will only take a couple minutes and\n
+	Verifying WEPPCLIFF installation (i.e. if you have not completed installation\n
+	this test will fail). This test will only take a couple minutes to finish and\n
 	will begin in a few seconds. Please check back momentarily for the results.\n")
 
 CHECKSUM=("\n
