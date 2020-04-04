@@ -17,10 +17,12 @@ Open the Tutorial.txt file (and WEPPCLIFF Documentation.pdf if more information 
 
 # Run Automated Tutorial on UNIX or Windows
 UNIX: From the directory containing WEPPCLIFF.R run: bash ./TUTORIAL/AutoTutorial.sh
+
 Windows: From the directory containing WEPPCLIFF.R run: ./TUTORIAL/AutoTutorial.bat
 
 # Run Automated Test (Installation Validation)
 UNIX: From the directory containing WEPPCLIFF.R run: bash ./AUTOTEST/AutoTest.sh
+
 Windows: From the directory containing WEPPCLIFF.R run: ./AUTOTEST/AutoTest.bat
 
 # Current Version
