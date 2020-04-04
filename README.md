@@ -16,11 +16,11 @@ If you are using windows you may need to add Rscript to the system PATH variable
 Open the Tutorial.txt file (and WEPPCLIFF Documentation.pdf if more information is desired) and follow the instructions within. Otherwise, follow instructions below for an automated tutorial and testing.
 
 # Run Automated Tutorial on UNIX or Windows
-UNIX: From the directory containing WEPPCLIFF.R run: bash ./TUTORIAL/AutoTutorial.sh\\
+UNIX: From the directory containing WEPPCLIFF.R run: bash ./TUTORIAL/AutoTutorial.sh\n
 Windows: From the directory containing WEPPCLIFF.R run: ./TUTORIAL/AutoTutorial.bat
 
 # Run Automated Test (Installation Validation)
-UNIX: From the directory containing WEPPCLIFF.R run: bash ./AUTOTEST/AutoTest.sh\\
+UNIX: From the directory containing WEPPCLIFF.R run: bash ./AUTOTEST/AutoTest.sh\n
 Windows: From the directory containing WEPPCLIFF.R run: ./AUTOTEST/AutoTest.bat
 
 # Current Version
