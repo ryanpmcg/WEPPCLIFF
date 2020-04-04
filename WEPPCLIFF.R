@@ -4,7 +4,7 @@
 
 #  Version: 1.4 
 #  Last Updated by: Ryan P. McGehee
-#  Last Updated on: 22 November 2019
+#  Last Updated on: 11 March 2020
 #  Purpose: This program was first designed to create an appropriate input
 #           climate file (.cli) for a WEPP model run. However, the program
 #           has evolved into a much more advanced and capable tool. See the
@@ -36,7 +36,7 @@ ________________________________________________________________________________
   cat(LOGO)}
 
 
-# A function to print a license agreement and accept user response.
+# A function to print a license agreement.
 print_license_agreement = function() {
   LICENSE = {"
   WEPP Climate File Formatter (WEPPCLIFF) Version 1.4
@@ -58,7 +58,6 @@ print_license_agreement = function() {
 
   McGehee, R.P., D.C. Flanagan, and P. Srivastava. 2019. WEPPCLIFF:
       A command-line tool to process climate inputs for soil loss models.
-      Submitted to Journal of Open Source Software on 22 November 2019. 
       Available at: https://github.com/ryanpmcg/WEPPCLIFF
 
   Corresponding Author: R.P. McGehee
@@ -69,7 +68,7 @@ print_license_agreement = function() {
   cat(lr)}
 
 
-# A function to print a license agreement and accept user response.
+# A function to prompt a license agreement and accept user response.
 prompt_license_agreement = function() {
   print_license_agreement()
   cat(lr, lr, "Do you accept these conditions? (Y/N)", lr, lr, collapse = "")
@@ -230,7 +229,7 @@ check_args = function() {
   # Create patterns for grep searching.
   u.patterns = paste("m", "e", collapse = "|")
   tf.patterns = paste("t", "f", collapse = "|")
-  ed.patterns = paste("0", "1", "2", "3", "4", "5", collapse = "|")
+  ed.patterns = paste("0", "1", "2", "3", "4", "5", "6", collapse = "|")
   sm.patterns = paste("1", "2", collapse = "|")
   bf.patterns = paste("1", collapse = "|")
   wi.patterns = paste("0", "1", collapse = "|")
@@ -245,7 +244,7 @@ check_args = function() {
   if (grepl(qc, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-qc] must be specified as 't' (true) or 'f' (false).")}
   if (grepl(id, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-id] must be specified as 't' (true) or 'f' (false).")}
   if (grepl(pd, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-pd] must be specified as 't' (true) or 'f' (false).")}
-  if (grepl(ed, ed.patterns, ignore.case = T) != T){stop("Invalid Argument: [-ed] must be specified as '0' (off), '1' (rds), '2' (json), or '3-5' (precip, daily, or storm csv).")}
+  if (grepl(ed, ed.patterns, ignore.case = T) != T){stop("Invalid Argument: [-ed] must be specified as '0' (off), '1' (rds), '2' (json), '3-5' (precip, daily, or storm csv), or '6' (all).")}
   if (grepl(eb, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-eb] must be specified as 't' (true) or 'f' (false).")}
   if (grepl(cp, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-cp] must be specified as 't' (true) or 'f' (false).")}
   if (grepl(pi, pi.patterns, ignore.case = T) != T){stop("Invalid Argument: [-pi] must be specified as 'f' (false) or an integer up to 1440 (in minutes).")}
@@ -472,7 +471,7 @@ create_duration_data = function(data, x) {
     # Convert to datetime (POSIX Count).
     if (length(na.omit(data[[j]][[dt_list[j]]])) == 0) {stop("Datetime data may not be handled correctly. Please check the input file(s) and arguments.")}
     if (length(na.omit(data[[j]][[dt_list[j]]])) > 0) {
-      data[[j]][[dt_list[j]]] = as.POSIXct(as.character(data[[j]][[dt_list[j]]]), format = dtf_list[j], tz = "GMT")
+      data[[j]][[dt_list[j]]] = as.POSIXct(as.character(data[[j]][[dt_list[j]]]), format = dtf_list[j])
       data[[j]] = data[[j]][complete.cases(data[[j]][,1]),]}
     
     # Handle precipitation and non-precipitation breaks.
@@ -516,7 +515,7 @@ create_duration_data = function(data, x) {
 modify_midnight_breakpoints = function(df, dtf) {
   
   # Calculate time from midnight.
-  df$TFM = sapply(as.POSIXlt(as.character(df$DT_1), format = dtf, tz = "GMT"), function(x) x$hour * 60 + x$min  + x$sec / 60)
+  df$TFM = sapply(as.POSIXlt(as.character(df$DT_1), format = dtf), function(x) x$hour * 60 + x$min  + x$sec / 60)
   
   # Compare time from midnight to break duration.
   dif.vec = df$TFM - df$DUR
@@ -789,7 +788,7 @@ impose_daily_value_limits = function(data, dly.df) {
   
   # Set daily value limits.
   d.u.lims = c(2000, 60, 500, 45, 60, 1432, 60, 360, 40)
-  d.l.lims = c(0, -90, 0, -90, -20, 0, 0, 0, -25)
+  d.l.lims = c(0, -90, 0, -90, -20, 1, 0, 0, -25)
   
   # Set names.
   nm = c("PRECIP", "AIR_TEMP", "REL_HUM", "MIN_TEMP", "MAX_TEMP", "SO_RAD", "W_VEL", "W_DIR", "DP_TEMP")
@@ -1028,7 +1027,7 @@ time_bounds = function(start, end) {
 start_of_year = function(date) {
   
   # Determine the actual start and setup rounded times.
-  real.start = as.POSIXlt(date, format = dtf1, tz = "GMT")
+  real.start = as.POSIXlt(date, format = dtf1)
   good.start = real.start
   month.start = real.start
   day.start = real.start
@@ -1058,7 +1057,7 @@ start_of_year = function(date) {
   hour.start$sec = 0
   
   # Round the ending date based on user input.
-  if (toupper(rtb) == "M") {if (month.start > real.start) {}}
+  if (toupper(rtb) == "M") {if (real.start > month.start) {good.start$year = good.start$year + 1}}
   if (toupper(rtb) == "D") {if (day.start > good.start) {good.start$year = good.start$year + 1}}
   if (toupper(rtb) == "H") {if (hour.start > good.start) {good.start$year = good.start$year + 1}}
   if (toupper(rtb) == "F") {if (real.start > good.start) {good.start$year = good.start$year + 1}}
@@ -1070,7 +1069,7 @@ start_of_year = function(date) {
 end_of_year = function(date) {
   
   # Determine the actual end and setup rounded times.
-  real.end = as.POSIXlt(date, format = dtf1, tz = "GMT")
+  real.end = as.POSIXlt(date, format = dtf1)
   good.end = real.end
   month.end = real.end
   day.end = real.end
@@ -1100,7 +1099,7 @@ end_of_year = function(date) {
   hour.end$sec = 59
   
   # Round the ending date based on user input.
-  if (toupper(rtb) == "M") {if (month.end < real.end) {}}
+  if (toupper(rtb) == "M") {if (real.end < month.end) {good.end$year = good.end$year - 1}}
   if (toupper(rtb) == "D") {if (day.end < good.end) {good.end$year = good.end$year - 1}}
   if (toupper(rtb) == "H") {if (hour.end < good.end) {good.end$year = good.end$year - 1}}
   if (toupper(rtb) == "F") {if (real.end < good.end) {good.end$year = good.end$year - 1}}
@@ -1193,7 +1192,7 @@ calculate_erosion_indices = function(data, storm.list, storm.df) {
   # Convert outputs to dataframes.
   ke.df = list.cbind(ke.list)
   ei.df = list.cbind(ei.list)
-  sp.df = as.data.frame(cbind(format(as.POSIXct(dtimes, origin = "1970-01-01"), tz = "GMT"), depth, dur, pdur, pdur/dur, ip, tp, itw, idw, i30))
+  sp.df = as.data.frame(cbind(format(as.POSIXct(dtimes, origin = "1970-01-01")), depth, dur, pdur, pdur/dur, ip, tp, itw, idw, i30))
   names(sp.df) = c("DT", "DEPTH", "DUR", "PDUR", "PRATIO", "PEAKINT", "PEAKTIME", "TIME_WM_INT", "DEPTH_WM_INT", "I30")
   
   # Calculate storm antecedent times.
@@ -1228,7 +1227,7 @@ process_daily_data = function(data, dly.in, alt.in, dly.ts, mly.ts, yly.ts, mly.
   d.dly = convert_df_type(d.dly, 2:ncol(d.dly), "n")
   d.dly = df_find_replace(d.dly, 2:ncol(d.dly), find = T, null = T, nan = T, na = T, inf = T, vals = -99999, replace = NA)
   agg.names = c("MIN_TEMP", "MAX_TEMP", "SO_RAD", "W_VEL", "W_DIR", "DP_TEMP")
-  
+
   # Overwrite with optional alternative data.
   if (toupper(alt) == "T") {
     d.alt = process_alt_data(data, alt.in)
@@ -1320,7 +1319,7 @@ process_precip_data = function(data, pcp.in, dly.ts, mly.ts, yly.ts, mly.mn) {
   if (toupper(verb) == "T") {cat(lr,"Processing precipitation data...")}
   
   # Remove the first precipitation event if it occurs at midnight.
-  first.dt = as.numeric(unlist(as.POSIXlt(data[[pcp.in]]$DT_1[1], tz = "GMT")))
+  first.dt = as.numeric(unlist(as.POSIXlt(data[[pcp.in]]$DT_1[1])))
   first.dur = data[[pcp.in]]$DUR[1]
   first.time = first.dt[3] * 60 + first.dt[2] + first.dt[1]/60
   if (first.dur >= first.time) {data[[pcp.in]] = data[[pcp.in]][-1,]}
@@ -1551,7 +1550,7 @@ fill_data = function(data, pcp.ts.in, dly.ts.in, dly.ts.out, pcp.ts.out) {
     for (i in 1:length(empty.days)) {names(fil.ts.list[[empty.days[i]]]) = names(pcp.ts.list[[1]])}
     
     # Add known daily information to the filled positions.
-    for (i in 1:length(empty.days)) {fil.ts.list[[empty.days[i]]][,1] = as.POSIXct(as.character(date.match[empty.days[i]]), format = "%Y%m%d", tz = "GMT")}
+    for (i in 1:length(empty.days)) {fil.ts.list[[empty.days[i]]][,1] = as.POSIXct(as.character(date.match[empty.days[i]]), format = "%Y%m%d")}
     for (i in 1:length(empty.days)) {fil.ts.list[[empty.days[i]]][,2] = date.match[empty.days[i]]}
     for (i in 1:length(empty.days)) {fil.ts.list[[empty.days[i]]][,3] = cluster.match[empty.days[i]]}}
   
@@ -1576,7 +1575,7 @@ fill_data = function(data, pcp.ts.in, dly.ts.in, dly.ts.out, pcp.ts.out) {
   # Reformat time series data.
   if (toupper(verb) == "T") {cat(lr,"Returning imputed data...")}
   imp.ts.df$DT_1 = paste(pcp.ts.df$YYYYMMDD, " ", imp.ts.df$HOUR, ":", imp.ts.df$MINUTE, ":", imp.ts.df$SECOND, sep = "")
-  imp.ts.df$DT_1 = as.POSIXct(imp.ts.df$DT_1, format = "%Y%m%d %H:%M:%S", tz = "GMT")
+  imp.ts.df$DT_1 = as.POSIXct(imp.ts.df$DT_1, format = "%Y%m%d %H:%M:%S")
   imp.ts.df = imp.ts.df[,c(7, 2:3)]
   
   # Change duplicated times.
@@ -1673,7 +1672,7 @@ create_cluster_col = function(in.df, dt.col.name, dt.format) {
   min.len.qmn = min(sapply(unique(qmn), function(x) length(which(qmn == x))))
   
   # Prepare clustering vectors.
-  dts = as.POSIXlt(fill.seq, format = "%Y%m%d", tz = "GMT")
+  dts = as.POSIXlt(fill.seq, format = "%Y%m%d")
   dys = as.numeric(format(dts, "%Y%m%d"))
   mns = as.numeric(substr(dys, 5, 6))
   qtr = as.numeric(substr(dys, 7, 8))
@@ -1813,7 +1812,7 @@ graph_data = function(data) {
   if (toupper(verb) == "T") {cat(lr,"Plotting data...")}
   
   # Create plotting directory structure.
-  setwd(plot.dir)
+  setwd(p)
   dir.list = c("INPUT", "OUTPUT", "OTHER")
   for (j in dir.list){create_directory(j)}
   
@@ -1847,7 +1846,7 @@ graph_data = function(data) {
     plot.list = c("ANNUAL", "MONTHLY", "DAILY", "STORMS")
     for (i in plot.list){
       for (j in 1:length(var.nm)) {
-        setwd(plot.dir)
+        setwd(p)
         setwd("OUTPUT")
         create_directory(i)
         setwd(i)
@@ -1858,7 +1857,7 @@ graph_data = function(data) {
           if (i == "STORMS"){storm_plots(data, 9, 17, stat.nm)}}}}}
   
   # Flexible plot functionality.
-  setwd(plot.dir)
+  setwd(p)
   setwd("OTHER")
   create_other_plots(data, stat.nm)
   
@@ -1905,7 +1904,7 @@ create_input_plots = function(var.nm, pty.nm, var.u, var.vec, dt.vec, var.qc, dt
   # Boxplot placeholder.
   # boxplot(var ~ mns, main = paste("Boxplot of ", j, sep = ""), xlab = paste(j, " (", var.unit, ")", sep = ""))
   
-  setwd(plot.dir)}
+  setwd(p)}
 
 
 # A function to create annual plots for output data.
@@ -1935,7 +1934,7 @@ annual_plots = function(data, og.df, gf.df, var.nm, pty.nm, var.u, stat.nm) {
     legend("topright", inset=c(0.0425,0), legend = c("Original", "Gap-Filled"), density = c(10, NA), fill = c("black", "red"))
     dev.off()}
   
-  setwd(plot.dir)}
+  setwd(p)}
 
 
 # A function to create monthly plots for output data.
@@ -1965,7 +1964,7 @@ monthly_plots = function(data, og.df, gf.df, var.nm, pty.nm, var.u, stat.nm) {
     legend("topright", inset=c(0.0425,0), legend = c("Original", "Gap-Filled"), density = c(10, NA), fill = c("black", "red"))
     dev.off()}
   
-  setwd(plot.dir)}
+  setwd(p)}
 
 
 # A function to create daily plots for output data.
@@ -1996,7 +1995,7 @@ daily_plots = function(data, og.df, gf.df, var.nm, pty.nm, var.u, stat.nm, plot.
     legend("topright", inset=c(0.0425,0), legend = c("Original", "Gap-Filled"), lty = c(1, 1), col = c("black", "red"))
     dev.off()}
   
-  setwd(plot.dir)}
+  setwd(p)}
 
 
 # A function to create storm plots for output data.
@@ -2039,7 +2038,7 @@ storm_plots = function(data, og.df, gf.df, stat.nm) {
       legend("topright", inset=c(-0.2,0), legend = c("Original", "Gap-Filled"), density = c(10, NA), fill = c("black", "red"))
       dev.off()}}
   
-  setwd(plot.dir)}
+  setwd(p)}
 
 
 # A function to create plots on demand.
@@ -2071,7 +2070,7 @@ create_other_plots = function(data, stat.nm) {
       plot(df.out$DT, df.out$INT, type = "S", main = "INPUT INTENSITY TIMESERIES", xlab = "Datetime", ylab = "INTENSITY (mm/hr)")
       dev.off()}}
   
-  setwd(plot.dir)}
+  setwd(p)}
 
 
 # A function to create annual summary data.
@@ -2082,16 +2081,22 @@ annual_summary = function(data, yly.ts, an.sum.loc) {
 
 # A function to export the primary data structure to file.
 export_data = function(data) {
+  
+  # Prepare for export.
   if (toupper(verb) == "T") {cat(lr,"Exporting data...")}
+  if (toupper(fn) == "STATION"){fn = data[[4]]["STATION"]}
   create_directory(e)
   setwd(e)
-  if (toupper(fn) == "STATION"){fn = data[[4]]["STATION"]}
-  if (ed == 1){saveRDS(data, paste(fn, ".rds", sep = ""))}
-  if (ed == 2){list.save(data, paste(fn, ".json", sep = ""))}
-  if (ed == 3){export_to_csv(data, 5, 15, "PRECIP")}
-  if (ed == 4){export_to_csv(data, 10, 18, "DAILY")}
-  if (ed == 5){export_to_csv(data, 9, 17, "STORM")}
+  
+  # Perform export.
+  if (ed == 6) {eb = "T"}
+  if (ed %in% c(1,6)) {saveRDS(data, paste(fn, ".rds", sep = ""))}
+  #if (ed %in% c(2,6)) {list.save(data, paste(fn, ".json", sep = ""))}
+  if (ed %in% c(3,6)) {export_to_csv(data, 5, 15, "PRECIP")}
+  if (ed %in% c(4,6)) {export_to_csv(data, 10, 18, "DAILY")}
+  if (ed %in% c(5,6)) {export_to_csv(data, 9, 17, "STORM")}
   if (toupper(eb) == "T") {export_pcp_bps(data, 5, 15, "BPS")}
+
   setwd(home.dir)}
 
 
@@ -2277,8 +2282,8 @@ create_cli_file = function(data, header, export) {
     # Get Start and End Times
     storm.loc = min(which(pcp_df$SID == sid))
     end.loc = max(which(pcp_df$SID == sid))
-    start = as.POSIXct(as.Date(pcp_df$DT_1[storm.loc]), format = "%Y-%m-%d", tz = "GMT")
-    end = as.POSIXct(as.Date(pcp_df$DT_1[end.loc]), format = "%Y-%m-%d", tz = "GMT")
+    start = as.POSIXct(as.Date(pcp_df$DT_1[storm.loc]), format = "%Y-%m-%d")
+    end = as.POSIXct(as.Date(pcp_df$DT_1[end.loc]), format = "%Y-%m-%d")
     daily.start = as.numeric(format(as.Date(start, format = "%Y-%m-%d"), format = "%Y%m%d"))
     daily.end = as.numeric(format(as.Date(end, format = "%Y-%m-%d"), format = "%Y%m%d"))
     
@@ -2434,7 +2439,7 @@ core_workflow = function(file) {
   data = annual_summary(data, 12, 14)
   data = preserve_missing_data(data, 13)
   if (toupper(id) == "T") {data = fill_workflow(data)}
-  if (toupper(pd) == "T") {graph_data(data)}
+  if (toupper(pd) == "T") {try(graph_data(data), silent = T)}
   if (toupper(eb) == "T" | ed > 0) {export_data(data)}
   header = generate_header_data(data)
   if (toupper(id) == "F") {export = generate_export_data(data, 10, 5)}
@@ -2617,8 +2622,8 @@ flagcount = c(1,
               47)
 
 var.e.list = c("lr", "args", flags, "u.loc", "ee.loc", "home.dir", "lib.dir", "package.list", "par.pack.list")
-package.list = c("backports", "crayon", "vctrs", "readr", "rlist", "iterators", "foreach", "doParallel", "EnvStats", "mice", "RcppParallel", "withr", "ggplot2", "profvis", "data.table")
-par.pack.list = c("backports", "crayon", "vctrs", "readr", "rlist", "EnvStats", "mice", "withr", "ggplot2", "profvis", "data.table")
+package.list = c("backports", "crayon", "vctrs", "readr", "rlist", "iterators", "foreach", "doParallel", "EnvStats", "mice", "RcppParallel", "withr", "ggplot2", "profvis", "data.table", "jsonlite")
+par.pack.list = c("backports", "crayon", "vctrs", "readr", "rlist", "EnvStats", "mice", "withr", "ggplot2", "profvis", "data.table", "jsonlite")
 function.e.list = c(lsf.str())
 export.list = c(var.e.list, function.e.list)
 
