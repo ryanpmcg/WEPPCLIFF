@@ -94,10 +94,34 @@ create_base_directory = function() {
 
 # A function to determine directory location.
 set_wds = function() {
-  home.dir <<- getwd()
+  # Find location of this file.
+  thisFile <- function() {
+          cmdArgs <- commandArgs(trailingOnly = FALSE)
+          needle <- "--file="
+          match <- grep(needle, cmdArgs)
+          if (length(match) > 0) {
+                  # Rscript
+                  return(normalizePath(sub(needle, "", cmdArgs[match])))
+          } else {
+                  # 'source'd via R console
+                  return(normalizePath(sys.frames()[[1]]$ofile))
+          }
+  }
+  home.dir <<- dirname(thisFile())
+
+  # Get current working directory.
+  working.dir <<- getwd()
+
   dir.names = c("lib.dir", "in.dir", "out.dir", "ex.dir", "plot.dir", "run.dir", "prof.dir")
   dir.locs = c("LIBRARY", "INPUT", "OUTPUT", "EXPORT", "PLOTS", "RUNS", "PROFILES")
-  for (i in 1:length(dir.names)) {assign(dir.names[i], paste(home.dir, "/", dir.locs[i], sep = ""), envir = .GlobalEnv)}}
+  for (i in 1:length(dir.names)) {
+    if (dir.names[i]=="lib.dir"){
+    assign(dir.names[i], paste(home.dir, "/", dir.locs[i], sep = ""), envir = .GlobalEnv)
+    } else {
+    assign(dir.names[i], paste(working.dir, "/", dir.locs[i], sep = ""), envir = .GlobalEnv)
+    }
+    }
+}
 
 
 # A function to install R package dependencies on the first run.
@@ -2534,7 +2558,10 @@ main = function() {
     suppressMessages(load_packages())
     cat("Installation successful. WEPPCLIFF is now ready to run.",lr, collapse = "")
     stop_quietly()}
-  
+
+  # Set library path with .libPaths
+  .libPaths( c( lib.dir, .libPaths() ) )
+
   # Read from file and store for processing.
   t.time = system.time({
     
