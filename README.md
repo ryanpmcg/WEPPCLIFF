@@ -30,7 +30,7 @@ Version 1.4.1 is the most recent upload to this repository. Version 1.4 focused 
 
 # Contributions
 Contributions are always warmly welcomed. Any contributions that materially improve performance, capabilities, accuracy, compatibility, etc. will be gladly incorporated in the source code, credited, and distributed through this repository. Ideally, contributions should proceed something like the following, but this should not be legalistic in any way:
-1. An issue is opened to see if the proposed changes have not already been considered and/or are not already being developed.
+1. An issue is opened to see if the proposed changes have not already been considered and would be useful.
 2. If the feedback is positive, the contributor should fork the repository and make their proposed changes to the code.
 3. When edits to the branch (and testing by the contributor) are completed, the contributor should make a pull request.
 4. If there are no problems, the new changes will be merged and distributed with the next version release.
