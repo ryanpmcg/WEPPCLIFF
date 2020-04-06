@@ -606,6 +606,10 @@ initialize_qc_data = function(data) {
 # A function to check input data quality.
 quality_check_inputs = function(data) {
   if (toupper(verb) == "T") {cat(lr,"Checking input data quality...")}
+  chkth = as.numeric(chkth)
+  spkth = as.numeric(spkth)
+  strth = as.numeric(strth)
+  stkth = as.numeric(stkth)
   data = create_rate_qc_data(data)
   data = run_nonprecip_checks(data)
   data = run_precip_checks(data)
