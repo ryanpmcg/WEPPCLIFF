@@ -2,9 +2,9 @@
 ############################## PROGRAM METADATA #############################
 #############################################################################
 
-#  Version: 1.4 
+#  Version: 1.4.1
 #  Last Updated by: Ryan P. McGehee
-#  Last Updated on: 11 March 2020
+#  Last Updated on: 5 April 2020
 #  Purpose: This program was first designed to create an appropriate input
 #           climate file (.cli) for a WEPP model run. However, the program
 #           has evolved into a much more advanced and capable tool. See the
@@ -39,7 +39,7 @@ ________________________________________________________________________________
 # A function to print a license agreement.
 print_license_agreement = function() {
   LICENSE = {"
-  WEPP Climate File Formatter (WEPPCLIFF) Version 1.4
+  WEPP Climate File Formatter (WEPPCLIFF) Version 1.4.1
   Copyright (c) 2019 Ryan P. McGehee
 
   This program is free software: you can redistribute it and/or modify
@@ -87,16 +87,15 @@ create_directory = function(var) {
 
 # A function to create the WEPPCLIFF base directory.
 create_base_directory = function() {
-  dirs = c("LIBRARY", "INPUT", "OUTPUT", "EXPORT", "PLOTS", "RUNS", "PROFILES")
+  dirs = c(l, d, o, e, p)
   for (i in dirs){create_directory(i)}}
 
 
 # A function to determine directory location.
 set_wds = function() {
-  home.dir <<- getwd()
-  dir.names = c("lib.dir", "in.dir", "out.dir", "ex.dir", "plot.dir", "run.dir", "prof.dir")
-  dir.locs = c("LIBRARY", "INPUT", "OUTPUT", "EXPORT", "PLOTS", "RUNS", "PROFILES")
-  for (i in 1:length(dir.names)) {assign(dir.names[i], paste(home.dir, "/", dir.locs[i], sep = ""), envir = .GlobalEnv)}}
+  dir.names = c("lib.dir", "in.dir", "out.dir", "ex.dir", "plot.dir")
+  dir.locs = c(l, d, o, e, p)
+  for (i in 1:length(dir.names)) {assign(dir.names[i], dir.locs[i], envir = .GlobalEnv)}}
 
 
 # A function to install R package dependencies on the first run.
@@ -169,10 +168,11 @@ assign_args_to_vars = function() {
 assign_empty_args = function() {
   
   # Execute initial assignment.
-  if (length(d) == 0){assign("d", in.dir, envir = .GlobalEnv)} # Def: current directory
-  if (length(o) == 0){assign("o", out.dir, envir = .GlobalEnv)} # Def: current directory
-  if (length(e) == 0){assign("e", ex.dir, envir = .GlobalEnv)} # Def: current directory
-  if (length(p) == 0){assign("p", plot.dir, envir = .GlobalEnv)} # Def: current directory
+  if (length(d) == 0){assign("d", paste(home.dir, "/INPUT", sep = ""), envir = .GlobalEnv)} # Def: current directory
+  if (length(o) == 0){assign("o", paste(home.dir, "/OUTPUT", sep = ""), envir = .GlobalEnv)} # Def: current directory
+  if (length(e) == 0){assign("e", paste(home.dir, "/EXPORT", sep = ""), envir = .GlobalEnv)} # Def: current directory
+  if (length(p) == 0){assign("p", paste(home.dir, "/PLOTS", sep = ""), envir = .GlobalEnv)} # Def: current directory
+  if (length(l) == 0){assign("l", paste(home.dir, "/LIBRARY", sep = ""), envir = .GlobalEnv)} # Def: current directory
   if (length(u) == 0){assign("u", "m", envir = .GlobalEnv)} # Def: metric units
   if (length(fn) == 0){assign("fn", "station", envir = .GlobalEnv)} # Def: output file name will be "out.cli"
   if (length(fr) == 0){assign("fr", "f", envir = .GlobalEnv)} # Def: not first run
@@ -840,7 +840,7 @@ trim_data = function(data, precip.ts.df, alt.ts.df, d.ts.df, event.list) {
   # Record Bounds
   start = max(mins, na.rm = T)
   end = min(maxs, na.rm = T)
-  
+
   # Trim data to exact bounds based on user inputs.
   if (toupper(alt) == "T") {groups = 5:7}
   if (toupper(alt) == "F") {groups = c(5, 7)}
@@ -1317,12 +1317,6 @@ use_alt_data = function(d.alt, d.dly) {
 # A function to process precipitation data.
 process_precip_data = function(data, pcp.in, dly.ts, mly.ts, yly.ts, mly.mn) {
   if (toupper(verb) == "T") {cat(lr,"Processing precipitation data...")}
-  
-  # Remove the first precipitation event if it occurs at midnight.
-  first.dt = as.numeric(unlist(as.POSIXlt(data[[pcp.in]]$DT_1[1])))
-  first.dur = data[[pcp.in]]$DUR[1]
-  first.time = first.dt[3] * 60 + first.dt[2] + first.dt[1]/60
-  if (first.dur >= first.time) {data[[pcp.in]] = data[[pcp.in]][-1,]}
   
   # Generate daily event metadata and find daily precipitation data.
   dates = format(data[[pcp.in]]$DT_1, format = "%Y%m%d")
@@ -2199,55 +2193,43 @@ generate_export_data = function(data, dly.loc, pcp.loc) {
   
   # Prepare daily data.
   daily_df = data[[dly.loc]]
-  dates = daily_df$YYYYMMDD
   if (sm == 2) {daily_df = daily_df[1,]}
-  
+  dates = daily_df$YYYYMMDD
+  daily_bps_adj = rep(0, nrow(daily_df))
+  daily_df$BPS[is.na(daily_df$BPS)] = 0
+
   # Prepare precipitation data.
   pcp_df = data[[pcp.loc]]
-  pcp_df$ADJ_NEW_DAY = F
-  pcp_df$NON_PCP_TIME = pcp_df$ANT - pcp_df$DUR
-  pcp_df$MIDNIGHT = grepl("00:00:00", pcp_df$DT_1)
-  
+  pcp_days = format(as.Date(as.character(pcp_df$DT_1)), format = "%Y%m%d")
+  pcp_times = as.numeric(format(pcp_df$DT_1, "%H")) * 3600 + as.numeric(format(pcp_df$DT_1, "%M")) * 60 + as.numeric(format(pcp_df$DT_1, "%S"))
+  pcp_times[pcp_times == 0] = 24 * 3600
+  clock_resets = c(NA, tail(pcp_times, length(pcp_times) - 1) - head(pcp_times, length(pcp_times) - 1))
+
   # Move a midnight breakpoint to the previous day.
-  pcp_df$BPT_ADJ = c(as.numeric(pcp_df$MIDNIGHT)[-1], 0)
-  pcp_df$BPT_ADJ[pcp_df$MIDNIGHT] = -1
-  
-  # Update daily data.
-  increase_days = substr(pcp_df$DT_1[c(pcp_df$MIDNIGHT[-1], F)], 1, 10)
-  decrease_days = substr(pcp_df$DT_1[pcp_df$MIDNIGHT], 1, 10)
-  daily_days = paste(substr(dates, 1, 4), "-", substr(dates, 5, 6), "-", substr(dates, 7, 8), sep = "")
-  increase = which(daily_days %in% increase_days)
-  decrease = which(daily_days %in% decrease_days)
-  daily_df$BPS[increase][is.na(daily_df$BPS[increase])] = 0
-  daily_df$BPS[increase] = daily_df$BPS[increase] + 1
-  daily_df$BPS[decrease][is.na(daily_df$BPS[decrease])] = 0
-  daily_df$BPS[decrease] = daily_df$BPS[decrease] - 1
-  
+  decrease_days = pcp_days[grepl("00:00:00", pcp_df$DT_1)]
+  increase_days = format(as.Date(decrease_days, format = "%Y%m%d") - 1, format = "%Y%m%d")
+  daily_bps_adj[which(daily_df$YYYYMMDD %in% decrease_days)] = daily_bps_adj[which(daily_df$YYYYMMDD %in% decrease_days)] - 1
+  daily_bps_adj[which(daily_df$YYYYMMDD %in% increase_days)] = daily_bps_adj[which(daily_df$YYYYMMDD %in% increase_days)] + 1
+
   # Add a breakpoint for everyday there is precipitation.
-  tmp = daily_df$BPS
-  tmp[is.na(tmp) == T] = 0
-  precip_days = tmp > 0
-  daily_df$ADJ_BPS = daily_df$BPS
-  daily_df$ADJ_BPS[precip_days] = daily_df$ADJ_BPS[precip_days] + 1
-  
+  updated_bps = daily_df$BPS + daily_bps_adj
+  updated_bps[which(updated_bps > 0)] = updated_bps[which(updated_bps > 0)] + 1
+  daily_df$BPS = updated_bps
+
   # Add a breakpoint for every non-precipitation breakpoint.
-  NBPTS = unique(c(1, cumsum(tmp) + 1))
-  if (NBPTS[length(NBPTS)] > nrow(pcp_df)){NBPTS = NBPTS[-length(NBPTS)]}
-  pcp_df$NEW_DAY = F
-  pcp_df$NEW_DAY[NBPTS] = T
-  pcp_df$DAY = cumsum(pcp_df$NEW_DAY)
-  pcp_df$NON_PCP_BP = F
-  pcp_df$NON_PCP_BP[intersect(which(pcp_df$NEW_DAY == F), which(pcp_df$NON_PCP_TIME > 0))] = T
-  increase = aggregate(pcp_df$NON_PCP_BP, by = list(pcp_df$DAY), FUN = sum)[,2]
-  daily_df$ADJ_BPS[precip_days] = daily_df$ADJ_BPS[precip_days] + increase
-  
-  # Use new nbrkpt values.
-  daily_df$BPS[is.na(daily_df$BPS)] = 0
-  daily_df$ADJ_BPS[is.na(daily_df$ADJ_BPS)] = 0
-  
+  pcp_new_days = which(clock_resets < 0 | pcp_df$ANT >= 1440 | pcp_df$DUR >= 1440)
+  pcp_rain_gap = which((pcp_df$BTW) > 0)
+  pcp_gap_increase = setdiff(pcp_rain_gap, pcp_new_days)
+  pcp_gap_days = format(pcp_df$DT_1[pcp_gap_increase], format = "%Y%m%d")
+  midnight_gap = format(pcp_df$DT_1[pcp_gap_increase], format = "%H%M%S")
+  pcp_gap_days[midnight_gap == "000000"] = format(as.POSIXct(pcp_df$DT_1[pcp_gap_increase][midnight_gap == "000000"] - 24*3600), format = "%Y%m%d")
+  increase_days = unname(sapply(pcp_gap_days, function(x) which(daily_df$YYYYMMDD %in% x)))
+  rle_days = rle(increase_days)
+  if (length(rle_days$values) > 0) {updated_bps[rle_days$values] = (mapply(function(x,y) updated_bps[x] + y, rle_days$values, rle_days$lengths))}
+
   # Format columns.
   nbrkpt = format(as.integer(daily_df$BPS), justify = "right", width = 3, nsmall = 0)
-  adjbrkpt = format(as.integer(daily_df$ADJ_BPS), justify = "right", width = 3, nsmall = 0)
+  adjbrkpt = format(as.integer(updated_bps), justify = "right", width = 3, nsmall = 0)
   tmin = format(round(as.numeric(daily_df$MIN_TEMP), 1), justify = "right", width = 5, nsmall = 1)
   tmax = format(round(as.numeric(daily_df$MAX_TEMP), 1), justify = "right", width = 5, nsmall = 1)
   rad = format(round(as.numeric(daily_df$SO_RAD), 1), justify = "right", width = 5, nsmall = 1)
@@ -2256,7 +2238,7 @@ generate_export_data = function(data, dly.loc, pcp.loc) {
   dew = format(round(as.numeric(daily_df$DP_TEMP), 1), justify = "right", width = 5, nsmall = 1)
   
   # Combine and export.
-  df_out = cbind(dy, mn, yr, nbrkpt, adjbrkpt, tmax, tmin, rad, wvel, wdir, dew)
+  df_out = cbind(dy, mn, yr, nbrkpt, tmax, tmin, rad, wvel, wdir, dew, adjbrkpt)
   export = list(df_out, daily_df)
   return(export)}
 
@@ -2316,53 +2298,47 @@ create_cli_file = function(data, header, export) {
   
   # Write header.
   temp.file = header
-  
+
   # Write daily lines.
   time.next.status = F
+  zero.out = format(round(0, 2), justify = "right", width = 6, nsmall = 2)
   for (i in daily_rows){
-    current.day = i
-    temp.new = paste(lr, "  ", df[i,1], "   ", df[i,2], "  ", df[i,3], "    ", df[i,5], "   ", df[i,6], "  ", df[i,7],
-                     "  ",   df[i,8], "  ",  df[i,9], "  ", df[i,10], "  ",   df[i,11], sep = "")
+    temp.new = paste(lr, "  ", df[i,1], "   ", df[i,2], "  ", df[i,3], "    ", df[i,11], "   ", df[i,5], "  ", df[i,6], "  ", df[i,7], "  ", df[i,8], "  ", df[i,9], "  ", df[i,10], sep = "")
     temp.file = append(temp.file, temp.new)
-    
+
     # Write the first breakpoint of the day.
     if (daily_df$BPS[i] > 0){
       bp.time = as.numeric(pcp_df$HOUR[current.pcp]) + as.numeric(pcp_df$MIN[current.pcp])/60 - as.numeric(pcp_df$DUR[current.pcp])/60
-      bp.depth = 0
       time.out = format(round(bp.time, 3), justify = "right", width = 6, nsmall = 3)
-      depth.out = format(round(bp.depth, 2), justify = "right", width = 6, nsmall = 2)
-      temp.new = paste(lr, time.out, " ", depth.out, sep = "")
+      temp.new = paste(lr, time.out, " ", zero.out, sep = "")
       temp.file = append(temp.file, temp.new)
-      need.break = F
-      last.pcp = current.pcp + daily_df$BPS[i] - 1
-      
+      bp.depth = 0
+      new.day = T
+
       # Write precipitation lines (precip and non-precip breaks).
+      last.pcp = current.pcp + daily_df$BPS[i] - 2
       for (j in current.pcp:last.pcp){
         
         # Write non-precip breaks.
-        if (need.break == T){
+        if (new.day == F & pcp_df$BTW[j] > 0){
           bp.time = as.numeric(pcp_df$HOUR[j]) + as.numeric(pcp_df$MIN[j])/60 - as.numeric(pcp_df$DUR[j])/60
-          time.out = format(round(bp.time, 3), justify = "right", width = 6, nsmall = 3)
-          depth.out = format(round(bp.depth, 2), justify = "right", width = 6, nsmall = 2)
-          temp.new = paste(lr, time.out, " ", depth.out, sep = "")
-          temp.file = append(temp.file, temp.new)
-          need.break = F}
-        
-        # Write precip breaks.
-        if (need.break == F){
-          bp.time = as.numeric(pcp_df$HOUR[j]) + as.numeric(pcp_df$MIN[j])/60
-          bp.depth = as.numeric(pcp_df$PRECIP[j]) + bp.depth
           time.out = format(round(bp.time, 3), justify = "right", width = 6, nsmall = 3)
           depth.out = format(round(bp.depth, 2), justify = "right", width = 6, nsmall = 2)
           temp.new = paste(lr, time.out, " ", depth.out, sep = "")
           temp.file = append(temp.file, temp.new)}
         
-        # Determine if a non-precip break is needed in the next iteration.
+        # Write precip breaks.
+        bp.time = as.numeric(pcp_df$HOUR[j]) + as.numeric(pcp_df$MIN[j])/60
+        bp.depth = as.numeric(pcp_df$PRECIP[j]) + bp.depth
+        time.out = format(round(bp.time, 3), justify = "right", width = 6, nsmall = 3)
+        depth.out = format(round(bp.depth, 2), justify = "right", width = 6, nsmall = 2)
+        temp.new = paste(lr, time.out, " ", depth.out, sep = "")
+        temp.file = append(temp.file, temp.new)
+        
+        # Stop if the end of the dataframe is encountered.
         if (j == last.pcp){need.break = F; break()}
         if ((j + 1) > nrow(pcp_df)){need.break = F; break()}
-        non_pcp_time = pcp_df$ANT[j + 1] - pcp_df$DUR[j + 1]
-        if (non_pcp_time > 0){need.break = T}
-        if (non_pcp_time == 0){need.break = F}}}
+        new.day = F}}
     
     # Setup for the next iteration.
     current.pcp = last.pcp + 1}
@@ -2517,7 +2493,8 @@ series_execution = function(files, s) {
 
 # The main program function.
 main = function() {
-  
+  home.dir <<- getwd()
+
   # Read in arguments.
   parse_arg_locations()
   early_license_agreement()
@@ -2528,10 +2505,10 @@ main = function() {
   if (toupper(la) != "Y") {prompt_license_agreement()}
   
   # Initiate run.
-  create_base_directory()
-  set_wds()
   assign_args_to_vars()
   assign_empty_args()
+  create_base_directory()
+  set_wds()
   
   # First run installation.
   if (fr == "t"){
@@ -2574,7 +2551,7 @@ x = 1:3                                   # Datetime groups to quality check.
 args = commandArgs(trailingOnly = T)      # User specified arguments (stdin).
 
 flags = c("fr", "la",
-          "d", "o", "e", "p", "f", "fn", "delim",
+          "d", "o", "e", "p", "l", "f", "fn", "delim",
           "u", "qc", "id", "pd", "ed", "alt", "pmd",
           "cp", "pi", "ei", "ee", "eb",
           "sid", "tth", "dth",
@@ -2586,7 +2563,7 @@ flags = c("fr", "la",
           "prof", "pint", "mepr", "gcpr", "lnpr", "warn", "verb")
 
 flagnames = c("First Run", "License Agreement",
-              "Input Directory", "Output Directory", "Export Directory", "Plot Directory", "Input Filename", "Output Filename", "File Delimiter",
+              "Input Directory", "Output Directory", "Export Directory", "Plot Directory", "Library Directory", "Input Filename", "Output Filename", "File Delimiter",
               "Unit Conversion", "Quality Check", "Impute Missing Data", "Plot Data", "Export Data", "Use Alternative Data", "Preserve Missing Data",
               "Cumulative Precipitation", "Precipitation Interval", "Calculate Erosion Indices", "Energy Equation(s)", "Export Breakpoints",
               "Storm Identifier", "Storm Separation Time Threshhold", "Storm Separation Depth Threshhold",
@@ -2611,15 +2588,15 @@ flagtypes = c("INSTALLATION ARGUMENTS",
 
 flagcount = c(1,
               3,
-              10,
-              17,
-              22,
-              25,
-              31,
-              35,
-              42,
-              46,
-              47)
+              11,
+              18,
+              23,
+              26,
+              32,
+              36,
+              43,
+              47,
+              48)
 
 var.e.list = c("lr", "args", flags, "u.loc", "ee.loc", "home.dir", "lib.dir", "package.list", "par.pack.list")
 package.list = c("backports", "crayon", "vctrs", "readr", "rlist", "iterators", "foreach", "doParallel", "EnvStats", "mice", "RcppParallel", "withr", "ggplot2", "profvis", "data.table", "jsonlite")
