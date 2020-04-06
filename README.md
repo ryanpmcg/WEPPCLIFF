@@ -34,3 +34,18 @@ Contributions are always warmly welcomed. Any contributions that materially impr
 2. If the feedback is positive, the contributor should fork the repository and make their proposed changes to the code.
 3. When edits to the branch (and testing by the contributor) are completed, the contributor should make a pull request.
 4. If there are no problems, the new changes will be merged and distributed with the next version release.
+
+# Support
+Only WEPPCLIFF-related issues are supported. If you have trouble with installing R, running command-line scripts, or other basics, support is not guaranteed. With that said, you may ask questions on the General Questions and Support Issue here: https://github.com/ryanpmcg/WEPPCLIFF/issues/11.
+
+# Issues
+To report a potential bug, suggest an improvement, or raise other points to the community, please open an issue. If there is a problem, please provide the following:
+1. Your OS and applicable hardware limitations
+2. Your version of R
+3. Your WEPPCLIFF command
+4. Your input files
+5. Your output (if there is any) and the correct output (if applicable)
+6. Your WEPPCLIFF/AUTOTEST/OUTPUT folder as a .zip file (if applicable)
+
+# Conduct
+Do not let this become an issue. Obviously poor conduct will result in a ban.
