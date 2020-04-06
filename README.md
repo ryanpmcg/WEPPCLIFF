@@ -49,3 +49,23 @@ To report a potential bug, suggest an improvement, or raise other points to the 
 
 # Conduct
 Do not let this become an issue. Obviously poor conduct will result in a ban.
+
+# Dependencies
+WEPPCLIFF is greatful to the open source community and relies on the hard work of others for part of its own success. All of this work from others is represented by the various packages listed below, which are required for various portions of WEPPCLIFF code to work (listed in order of installation).
+
+1. backports
+2. crayon
+3. vctrs
+4. readr
+5. rlist
+6. iterators
+7. foreach
+8. doParallel
+9. EnvStats
+10. mice
+11. RcppParallel
+12. withr
+13. ggplot2
+14. profvis
+15. data.table
+16. climextRemes
