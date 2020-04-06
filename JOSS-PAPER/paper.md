@@ -34,15 +34,17 @@ It appears that the lack of sufficient software in this field has resulted in mo
 
 In short, the erosion modeling community is in need of software that can at least shoulder most of the burden when preparing climate inputs for soil loss models. Therefore, we are proposing a WEPP CLImate File Formatter (WEPPCLIFF) program to begin addressing this need.
 
+Historically, when providing climate inputs to WEPP, there were essentially two options. One must either a) use CLIGEN to prepare a daily 'tp-ip' format input file or b) manually prepare a 'breakpoint' format input file. The first option was the preferred method for providing climate inputs to WEPP, and it was originally the only way to prepare inputs for simulation with WEPP. The second option was added later in WEPP's development as a way to provide the highest resolution and best quality precipitation data for WEPP simulations. This enabled higher quality results primarily for single-storm simulation, but it was impractical for continous simulation for even a small period of time. ``WEPPCLIFF`` pushes this capability to the extreme by providing the capability to prepare relatively vast (format-intensive) climate inputs to force WEPP for extended continuous simulation while still preserving the most valuable components of breakpoint data (discussed in more detail later). Details on these two input formats can be found in either CLIGEN, WEPP, or WEPPCLIFF documentation.
+
 ``WEPPCLIFF`` is an R-based command line tool which was originally designed to prepare 'breakpoint format' climate file inputs for WEPP (Figure 1) that has been extended to perform other general functions such as quality checking (Figures 2 and 3), gap filling (Figure 4), and erosion index calculations (climate inputs for the USLE family of models). The program is also provided with extensive accompanying documentation which covers a range of topics including most notably: installation, syntax, input, output, and examples.
 
-![Example 'breakpoint format' climate input file for WEPP](KMQE_CLI_FILE_COLOR.png)
+![An example 'breakpoint format' climate input file for WEPP, which was prepared by WEPPCLIFF](KMQE_CLI_FILE_COLOR.png)
 
-![Example quality checked input timeseries](KMQE_WIND_VELOCITY_INPUT_TS.png)
+![An example quality checked input timeseries of 15-minute (DSI-3260) precipitation data](KMQE_WIND_VELOCITY_INPUT_TS.png)
 
-![Example quality checked input histogram](KMQE_WIND_VELOCITY_INPUT_HIST.png)
+![An example quality checked input timeseries of 1-minute (ASOS) precipitation data](KMQE_WIND_VELOCITY_INPUT_HIST.png)
 
-![Example gap-filled daily output timeseries](KMQE_WIND_VELOCITY_DAILY_TS.png)
+![An example gap-filled daily output timeseries for precipitation data (same station as Figure 3)](KMQE_WIND_VELOCITY_DAILY_TS.png)
 
 # Existing Software
 
