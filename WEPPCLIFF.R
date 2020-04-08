@@ -1342,7 +1342,7 @@ process_precip_data = function(data, pcp.in, dly.ts, mly.ts, yly.ts, mly.mn) {
   # Merge with daily time series data.
   d.precip = merge(data[[dly.ts]], d.precip, by = "YYYYMMDD", all.x = T)
   data[[dly.ts]] = d.precip
-  
+
   # Find monthly precipitation.
   m.sum = aggregate(d.precip$PRECIP, by = list(format(as.Date(d.precip$YYYYMMDD, format = "%Y%m%d"), format = "%Y%m")), FUN = sum, simplify = F, na.rm = T)
   m.bps = aggregate(d.precip$BPS, by = list(format(as.Date(d.precip$YYYYMMDD, format = "%Y%m%d"), format = "%Y%m")), FUN = sum, simplify = F, na.rm = T)$x
