@@ -56,7 +56,7 @@ print_license_agreement = function() {
   
   Please provide an appropriate citation in any published work as follows:
 
-  McGehee, R.P., D.C. Flanagan, and P. Srivastava. 2019. WEPPCLIFF:
+  McGehee, R.P., D.C. Flanagan, and P. Srivastava. 2020. WEPPCLIFF:
       A command-line tool to process climate inputs for soil loss models.
       Available at: https://github.com/ryanpmcg/WEPPCLIFF
 
