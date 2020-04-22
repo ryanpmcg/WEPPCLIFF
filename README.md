@@ -51,7 +51,7 @@ To report a potential bug, suggest an improvement, or raise other points to the 
 Do not let this become an issue. Obviously poor conduct will result in a ban.
 
 # Dependencies
-WEPPCLIFF is greatful to the open source community and relies on the hard work of others for part of its own success. All of this work from others is represented by the various packages listed below, which are required for various portions of WEPPCLIFF code to work (listed in order of installation).
+WEPPCLIFF is grateful to the open source community and relies on the hard work of others for part of its own success. All of this work from others is represented by the various packages listed below, which are required for various portions of WEPPCLIFF code to work (listed in order of installation).
 
 1. backports
 2. crayon
