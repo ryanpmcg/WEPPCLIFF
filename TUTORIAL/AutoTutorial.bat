@@ -1,8 +1,10 @@
 @ECHO OFF
 DIR "C:\Program Files\R" /s /b | FIND "bin\Rscript.exe" > TMP.txt
 SET /p PathToRscript=<TMP.txt
+DIR "C:\" /s /b | FIND "C:\WEPPCLIFF" > TMP.txt
+SET /p PathToWEPPCLIFF=<TMP.txt
 DEL TMP.txt
-CD ..
+CD %PathToWEPPCLIFF%
 
 "%PathToRscript%" --vanilla WEPPCLIFF.R --args -fr t
 "%PathToRscript%" --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y
