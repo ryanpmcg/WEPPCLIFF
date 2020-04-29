@@ -14,27 +14,27 @@ cd ..
 ##############################  GLOBAL VARIABLES  ##############################
 ################################################################################
 
-TEST=("\n
-	Verifying WEPPCLIFF installation (i.e. if you have not completed installation\n
-	this test will fail). This test will only take a couple minutes to finish and\n
-	will begin in a few seconds. Please check back momentarily for the results.\n")
+TEST=("
+  Verifying WEPPCLIFF installation (i.e. if you have not completed installation
+  this test will fail). This test will only take a couple minutes to finish and
+  will begin in a few seconds. Please check back momentarily for the results.")
 
-CHECKSUM=("\n
-	Running checksum tests. Almost done...\n")
+CHECKSUM=("
+  Running checksum tests. Almost done...")
 	 
-SUCCESS=("\n
-	CONGRATULATIONS! Your WEPPCLIFF installation was successfully verified by 8\n
-	automated test runs and 16 highly unique file outputs. Now you are ready to use\n
-	WEPPCLIFF with peace of mind, knowing everything is working as intended.\n")
+SUCCESS=("
+  CONGRATULATIONS! Your WEPPCLIFF installation was successfully verified by 8
+  automated test runs and 16 highly unique file outputs. Now you are ready to
+  use WEPPCLIFF with peace of mind, knowing everything is working as intended.")
 
-FAILURE=("\n
-	OOPS! Something is not right. Your WEPPCLIFF installation failed at least one\n
-	of 8 automated test runs. Please remove and reinstall WEPPCLIFF then try this\n
-	test again. If the problem persists and you believe the problem lies within\n
-	WEPPCLIFF, please create an issue at: https://github.com/ryanpmcg/WEPPCLIFF\n
-	\n
-	Thank you! Hopefully the WEPPCLIFF community can help you get up and running\n
-	soon.\n")
+FAILURE=("
+  OOPS! Something is not right. Your WEPPCLIFF installation failed at least one
+  of 8 automated test runs. Please remove and reinstall WEPPCLIFF then try this
+  test again. If the problem persists and you believe the problem lies within
+  WEPPCLIFF, please create an issue at: https://github.com/ryanpmcg/WEPPCLIFF
+
+  Thank you! Hopefully the WEPPCLIFF community can help you get up and running
+  soon.")
 
 
 ################################################################################
@@ -42,7 +42,7 @@ FAILURE=("\n
 ################################################################################
 
 clear
-echo $TEST
+printf "$TEST"
 sleep 10
 
 Rscript --vanilla WEPPCLIFF.R --args -o $DIRECTORY/OUTPUT -e $DIRECTORY/OUTPUT -fn AutoTest.1 -f ASOS_BPT_KMQE.csv -la y -verb t -ed 1
@@ -60,7 +60,7 @@ Rscript --vanilla WEPPCLIFF.R --args -o $DIRECTORY/OUTPUT -e $DIRECTORY/OUTPUT -
 ################################################################################
 
 clear
-echo $CHECKSUM
+printf "$CHECKSUM\n"
 FAIL=0
 
 for ITER in {1..8}
@@ -70,10 +70,10 @@ for ITER in {1..8}
 		TEMP=$(md5 $DIRECTORY/OUTPUT/AutoTest.$ITER.cli | awk '{print $4}')
 
 		# Check MD5 Sums and Print Results
-		if [ `echo $BENCH` == `echo $TEMP` ]; then
-			echo " Passed CLI Test $ITER"
+		if [ `printf $BENCH` == `printf $TEMP` ]; then
+			printf "\n  Passed CLI Test $ITER"
 		else
-			echo " Failed CLI Test $ITER"
+			printf "\n  Failed CLI Test $ITER"
 			FAIL=1
 		fi
 
@@ -82,12 +82,14 @@ for ITER in {1..8}
 		TEMP=$(md5 $DIRECTORY/OUTPUT/AutoTest.$ITER.rds | awk '{print $4}')
 
 		# Check MD5 Sums and Print Results
-		if [ `echo $BENCH` == `echo $TEMP` ]; then
-			echo " Passed RDS Test $ITER"
+		if [ `printf $BENCH` == `printf $TEMP` ]; then
+			printf "\n  Passed RDS Test $ITER"
 		else
-			echo " Failed RDS Test $ITER"
+			printf "\n  Failed RDS Test $ITER"
 			FAIL=1
 		fi
+
+		printf "\n"
 	done
 
 
@@ -96,7 +98,9 @@ for ITER in {1..8}
 ################################################################################
 
 if [ $FAIL == 0 ]; then
-	echo $SUCCESS
+	printf "\n$SUCCESS"
 else
-	echo $FAILURE
+	printf "\n$FAILURE"
 fi
+
+printf "\n\n"
