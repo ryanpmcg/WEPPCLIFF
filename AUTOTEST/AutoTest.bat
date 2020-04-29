@@ -1,8 +1,10 @@
 @ECHO OFF
 DIR "C:\Program Files\R" /s /b | FIND "bin\Rscript.exe" > TMP.txt
 SET /p PathToRscript=<TMP.txt
+DIR "C:\" /s /b | FIND "C:\WEPPCLIFF" > TMP.txt
+SET /p PathToWEPPCLIFF=<TMP.txt
 DEL TMP.txt
-CD ..
+CD %PathToWEPPCLIFF%
 
 CLS
 ECHO Verifying WEPPCLIFF installation (i.e. if you have not completed installation & ECHO this test will fail). This test will only take a couple minutes to finish and & ECHO will begin in a few seconds. Please check back momentarily for the results. & ECHO.
@@ -27,5 +29,5 @@ FOR %%I IN (1 2 3 4 5 6 7 8) DO (
 	IF !ERRORLEVEL! NEQ 0 (SET FAIL=1) ELSE (ECHO Passed CLI Test %%I)
 	)
 
-IF %FAIL%==0 (ECHO. & ECHO CONGRATULATIONS! Your WEPPCLIFF installation was successfully verified by 8 & ECHO automated test runs and 16 highly unique file outputs. Now you are ready to use & ECHO WEPPCLIFF with peace of mind, knowing everything is working as intended. & ECHO ) ELSE (ECHO. & ECHO OOPS! Something is not right. Your WEPPCLIFF installation failed at least one & ECHO of 8 automated test runs. Please remove and reinstall WEPPCLIFF then try this & ECHO test again. If the problem persists and you believe the problem lies within & ECHO WEPPCLIFF, please create an issue at: https://github.com/ryanpmcg/WEPPCLIFF & ECHO  & ECHO Thank you! Hopefully the WEPPCLIFF community can help you get up and running & ECHO soon. & ECHO.)
+IF %FAIL%==0 (ECHO. & ECHO CONGRATULATIONS^^! Your WEPPCLIFF installation was successfully verified by 8 & ECHO automated test runs and 16 highly unique file outputs. Now you are ready to use & ECHO WEPPCLIFF with peace of mind, knowing everything is working as intended. & ECHO ) ELSE (ECHO. & ECHO OOPS^^! Something is not right. Your WEPPCLIFF installation failed at least one & ECHO of 8 automated test runs. Please remove and reinstall WEPPCLIFF then try this & ECHO test again. If the problem persists and you believe the problem lies within & ECHO WEPPCLIFF, please create an issue at: https://github.com/ryanpmcg/WEPPCLIFF & ECHO  & ECHO Thank you^^! Hopefully the WEPPCLIFF community can help you get up and running & ECHO soon. & ECHO.)
 TIMEOUT 60
