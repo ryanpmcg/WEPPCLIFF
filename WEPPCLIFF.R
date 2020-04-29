@@ -196,6 +196,7 @@ assign_empty_args = function() {
   if (length(io) == 0){assign("io", 100, envir = .GlobalEnv)} # Def: use up to 100 iterations
   if (length(qi) == 0){assign("qi", "f", envir = .GlobalEnv)} # Def: do not cut corners on imputation
   if (length(iv) == 0){assign("iv", "f", envir = .GlobalEnv)} # Def: do not print imputation progress
+  if (length(tz) == 0){assign("tz", "GMT", envir = .GlobalEnv)} # Def: use GMT for the time zone
   if (length(alt) == 0){assign("alt", "f", envir = .GlobalEnv)} # Def: alternative data provided
   if (length(pmd) == 0){assign("pmd", "f", envir = .GlobalEnv)} # Def: do not preserve missingness
   if (length(sid) == 0){assign("sid", 1, envir = .GlobalEnv)} # Def: use first storm in list
@@ -516,7 +517,7 @@ modify_midnight_breakpoints = function(df, dtf) {
   
   # Calculate time from midnight.
   df$TFM = sapply(as.POSIXlt(as.character(df$DT_1), format = dtf), function(x) x$hour * 60 + x$min  + x$sec / 60)
-  
+
   # Compare time from midnight to break duration.
   dif.vec = df$TFM - df$DUR
   
@@ -2513,6 +2514,7 @@ main = function() {
   assign_empty_args()
   create_base_directory()
   set_wds()
+  Sys.setenv(TZ = tz)
   
   # First run installation.
   if (fr == "t"){
@@ -2561,7 +2563,7 @@ flags = c("fr", "la",
           "sid", "tth", "dth",
           "qcop", "chkth", "spkth", "strth", "stkth", "rp",
           "im", "io", "qi", "iv",
-          "sdt", "edt", "rtb", "ipb", "dtf1", "dtf2", "dtf3",
+          "tz", "sdt", "edt", "rtb", "ipb", "dtf1", "dtf2", "dtf3",
           "cv", "sm", "bf", "wi", 
           "mp",
           "prof", "pint", "mepr", "gcpr", "lnpr", "warn", "verb")
@@ -2573,7 +2575,7 @@ flagnames = c("First Run", "License Agreement",
               "Storm Identifier", "Storm Separation Time Threshhold", "Storm Separation Depth Threshhold",
               "Quality Checking Option", "Checking Threshold", "Spiking Threshold", "Streaking Threshold", "Sticking Threshold", "Return Period",
               "Impute Method", "Iteration Override", "Quick Impute", "Impute Verbosity",
-              "Start Datetime", "End Datetime", "Round Time Bounds", "Ignore Precipitation Bounds", "Precipitation Datetime Format", "Alternative Data Datetime Format", "Non-Precipitation Datetime Format",
+              "Time Zone", "Start Datetime", "End Datetime", "Round Time Bounds", "Ignore Precipitation Bounds", "Precipitation Datetime Format", "Alternative Data Datetime Format", "Non-Precipitation Datetime Format",
               "CLIGEN Version", "Simulation Mode", "Breakpoint Format", "Wind Information",
               "Multiprocessing",
               "Profile Code", "Profile Interval", "Profile Memory", "Profile Garbage Collection", "Profile Lines", "Show Warnings", "Verbosity")
@@ -2598,9 +2600,9 @@ flagcount = c(1,
               26,
               32,
               36,
-              43,
-              47,
-              48)
+              44,
+              48,
+              49)
 
 var.e.list = c("lr", "args", flags, "u.loc", "ee.loc", "home.dir", "lib.dir", "package.list", "par.pack.list")
 package.list = c("backports", "crayon", "vctrs", "readr", "rlist", "iterators", "foreach", "doParallel", "EnvStats", "mice", "RcppParallel", "withr", "ggplot2", "profvis", "data.table", "jsonlite")
