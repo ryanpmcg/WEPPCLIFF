@@ -93,7 +93,7 @@ WINDOWS: start a new command-prompt session.
 UNIX: start a new terminal session.
 
 
-# SETUP & INSTALLATION
+# SETUP & INSTALLATION:
 
 Installation has already been covered by Install.bat or Install.sh for Windows or UNIX, respectively.
 This section exists to show you how to perform installation manually if desired.
@@ -117,101 +117,93 @@ If installation was unsuccessful, you can try the same command again.
 If installation is still unsuccessful, I do not support non-WEPPCLIFF issues.
 
 
-################################################################################
-############################## BASIC FUNCTIONALITY #############################
-################################################################################
+# BASIC FUNCTIONALITY:
 
-# Run an example input with default settings.
+Run an example input with default settings.
 Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv
 
-# Change the output filename, add early license agreement, and turn on verbosity.
+Change the output filename, add early license agreement, and turn on verbosity.
 Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -fn bpt -la y -verb t
 
-# Change the output location, turn on graphical output, and trim the period analyzed.
+Change the output location, turn on graphical output, and trim the period analyzed.
 Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y -verb t -o JUNK -pd t -sdt "2000-01-01 00:00:00" -edt "2004-12-31 24:00:00"
 
 
-################################################################################
-############################### BREAKPOINT INPUTS ##############################
-################################################################################
+# BREAKPOINT INPUTS:
 
-# Run an example single-storm, breakpoint input with cumulative precipitation and mixed units (English and metric).
+Run an example single-storm, breakpoint input with cumulative precipitation and mixed units (English and metric).
 Rscript --vanilla WEPPCLIFF.R --args -f AH537_BPT_CP.csv -cp t -u m PRECIP -sm 2 -la y -ipb t
 
-# Run the same input and turn on graphical output, erosion index calculations, and export functionality.
+Run the same input and turn on graphical output, erosion index calculations, and export functionality.
 Rscript --vanilla WEPPCLIFF.R --args -f AH537_BPT_CP.csv -cp t -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
 
-# Run the same command using incremental precipitation inputs.
+Run the same command using incremental precipitation inputs.
 Rscript --vanilla WEPPCLIFF.R --args -f AH537_BPT_IP.csv -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
 
 
-################################################################################
-############################# FIXED-INTERVAL INPUTS ############################
-################################################################################
+# FIXED-INTERVAL INPUTS:
 
-# Run several variations of the same command as before using various fixed interval products.
+Run several variations of the same command as before using various fixed interval products.
 
-# One-minute (unlimited precision) data.
+One-minute (unlimited precision) data.
 Rscript --vanilla WEPPCLIFF.R --args -f AH537_1MIN_UP.csv -pi 1 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
 
-# One-minute (0.01 inch precision) data.
+One-minute (0.01 inch precision) data.
 Rscript --vanilla WEPPCLIFF.R --args -f AH537_1MIN.csv -pi 1 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
 
-# Five-minute (0.01 inch precision) data.
+Five-minute (0.01 inch precision) data.
 Rscript --vanilla WEPPCLIFF.R --args -f AH537_5MIN.csv -pi 5 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
 
-# Ten-minute (0.01 inch precision) data.
+Ten-minute (0.01 inch precision) data.
 Rscript --vanilla WEPPCLIFF.R --args -f AH537_10MIN.csv -pi 10 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
 
-# Fifteen-minute (0.01 inch precision) data.
+Fifteen-minute (0.01 inch precision) data.
 Rscript --vanilla WEPPCLIFF.R --args -f AH537_15MIN.csv -pi 15 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
 
-# Fifteen-minute (unlimited precision) data.
+Fifteen-minute (unlimited precision) data.
 Rscript --vanilla WEPPCLIFF.R --args -f AH537_15MIN_UP.csv -pi 15 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
 
-# Fifteen-minute (0.1 inch precision) data.
+Fifteen-minute (0.1 inch precision) data.
 Rscript --vanilla WEPPCLIFF.R --args -f AH537_15MIN_HT.csv -pi 15 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
 
-# Guess which one of all the above inputs is used for national conservation planning efforts (as of April 2020)... Yep. The last one. Sigh.
+Guess which one of all the above inputs is used for national conservation planning efforts (as of April 2020)... Yep. The last one. Sigh.
 
 
-################################################################################
-############################ ADVANCED FUNCTIONALITY ############################
-################################################################################
+# ADVANCED FUNCTIONALITY:
 
-# Run the first example again with quality checking and graphical output.
+Run the first example again with quality checking and graphical output.
 Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y -verb t -qc t -pd t
 
-# Run the example again with gap filling (quick version) and binary data export.
+Run the example again with gap filling (quick version) and binary data export.
 Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y -verb t -qc t -pd t -id t -qi t -ed 1
 
-# If you are patient, run the example again with gap filling (the super-tedious, has-to-be-right, OCD version) and filling verbosity on.
+If you are patient, run the example again with gap filling (the super-tedious, has-to-be-right, OCD version) and filling verbosity on.
 Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y -verb t -qc t -pd t -id t -iv t -ed 1
 
-# Begin an R session in either RStudio or your terminal (whichever you prefer) and load the binary data using the following:
+Begin an R session in either RStudio or your terminal (whichever you prefer) and load the binary data using the following:
 data = readRDS("C:/WEPPCLIFF/EXPORT/KMQE.rds")
 
-# Access any object in the primary data structure (a list of objects) with the following:
+Access any object in the primary data structure (a list of objects) with the following:
 
-# ORIGINAL INPUTS (AFTER FORMATTING / PREPROCESSING)
+## ORIGINAL INPUTS (AFTER FORMATTING / PREPROCESSING):
 
 	input_precipitation_dataframe			= data[[1]]
 	input_alternative_dataframe			= data[[2]]
 	input_daily_dataframe				= data[[3]]
 	input_station_metadata_vector			= data[[4]]
 
-# WEPPCLIFF ALTERED INPUTS (QC / TRIMMING / CONVERSIONS / ETC)
+## WEPPCLIFF ALTERED INPUTS (QC / TRIMMING / CONVERSIONS / ETC):
 
 	trimmed_qc_precipitation_dataframe		= data[[5]]
 	trimmed_qc_alternative_dataframe		= data[[6]]
 	trimmed_qc_daily_dataframe			= data[[7]]
 
-# STORM SEPARATION DERIVATIVES
+## STORM SEPARATION DERIVATIVES:
 
 	storm_breakpoints_list				= data[[8]]
 	storm_characteristics_dataframe			= data[[9]]
 
-# AGGREGATED TIMESERIES DATA AND STATISTICAL SUMMARIES
+## AGGREGATED TIMESERIES DATA AND STATISTICAL SUMMARIES:
 
 	aggregated_daily_timeseries_dataframe		= data[[10]]
 	aggregated_monthly_timeseries_dataframe		= data[[11]]
@@ -219,7 +211,7 @@ data = readRDS("C:/WEPPCLIFF/EXPORT/KMQE.rds")
 	aggregated_monthly_means_dataframe		= data[[13]]
 	annual_summary_output				= data[[14]]
 
-# GAP-FILLED VERSIONS OF PRIOR STRUCTURES
+## GAP-FILLED VERSIONS OF PRIOR STRUCTURES:
 
 	gap_filled_precipitation_dataframe		= data[[15]]
 	gap_filled_storm_breakpoints_list		= data[[16]]
@@ -230,4 +222,6 @@ data = readRDS("C:/WEPPCLIFF/EXPORT/KMQE.rds")
 	gap_filled_monthly_mean_dataframe		= data[[21]]
 	gap_filled_annual_summary_output		= data[[22]]
 
-# NOTE: Some of the above may be empty (NULL) if various options are not specified.
+## NOTE:
+
+	Some of the above may be empty (NULL) if various options are not specified.
