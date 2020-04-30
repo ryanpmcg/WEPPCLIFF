@@ -1,12 +1,11 @@
 @ECHO OFF
 DIR "C:\Program Files\R" /s /b | FIND "bin\Rscript.exe" > TMP.txt
 SET /p PathToRscript=<TMP.txt
-DIR "C:\" /s /b | FIND "C:\WEPPCLIFF" > TMP.txt
+DIR "C:\" /b | FIND "C:\WEPPCLIFF" > TMP.txt
 SET /p PathToWEPPCLIFF=<TMP.txt
 DEL TMP.txt
-CD %PathToWEPPCLIFF%
+CD "C:\WEPPCLIFF"
 
-"%PathToRscript%" --vanilla WEPPCLIFF.R --args -fr t
 "%PathToRscript%" --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y
 "%PathToRscript%" --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -fn bpt -la y -verb t
 "%PathToRscript%" --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y -verb t -o JUNK -pd t -sdt "2000-01-01 00:00:00" -edt "2004-12-31 24:00:00"
