@@ -58,7 +58,7 @@ print_license_agreement = function() {
 
   McGehee, R.P., D.C. Flanagan, and P. Srivastava. 2020. WEPPCLIFF:
       A command-line tool to process climate inputs for soil loss models.
-      Journal of Open Source Software. doi:notYetAssigned
+      Journal of Open Source Software. https://doi.org/10.21105/joss.02029
       Repository available at: https://github.com/ryanpmcg/WEPPCLIFF
 
   Corresponding Author: R.P. McGehee
