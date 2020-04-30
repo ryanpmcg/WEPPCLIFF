@@ -6,9 +6,8 @@ Follow the following steps closely!
 
 1. Clone this repository to your own preferred location (for Windows, it is recommended to use the C:/ drive).
 2. Install R version 3.6.1 or later (WEPPCLIFF was most recently validated with R-3.6.1).
-3.
-  a. (UNIX) From the directory containing WEPPCLIFF.R run: bash ./INSTALLER/Install.sh
-  b. (Windows) From the directory containing WEPPCLIFF.R run: ./INSTALLER/Install.bat
+3. (UNIX) From the directory containing WEPPCLIFF.R run: bash ./INSTALLER/Install.sh
+3. (Windows) From the directory containing WEPPCLIFF.R run: ./INSTALLER/Install.bat
 
 ## Run Tutorial Manually (as Intended) on UNIX or Windows.
 Open the Tutorial.txt file (and WEPPCLIFF Documentation.pdf if more information is desired) and follow the instructions within. Otherwise, follow instructions below for an automated tutorial and testing.
