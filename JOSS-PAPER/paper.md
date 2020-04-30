@@ -36,7 +36,7 @@ In short, the erosion modeling community is in need of software that can at leas
 
 ``WEPPCLIFF`` is an R-based command line tool which was originally designed to prepare 'breakpoint format' climate file inputs for WEPP (Figure 1) that has been extended to perform other general functions such as storm separation, quality checking, gap filling, and erosion index (EI) calculations (climate inputs for the USLE family of models). The program is also provided with extensive accompanying documentation which covers a range of topics including most notably: installation, syntax, input, output, and examples.
 
-![An example 'breakpoint format' climate input file for WEPP, which was prepared by WEPPCLIFF.](KMQE_CLI_FILE_COLOR.png)
+![An example 'breakpoint format' climate input file for WEPP, which was prepared by WEPPCLIFF. More information on the format of WEPP climate inputs can be obtained from its documentation at: [https://www.ars.usda.gov/ARSUserFiles/50201000/WEPP/usersum.pdf](https://www.ars.usda.gov/ARSUserFiles/50201000/WEPP/usersum.pdf)](KMQE_CLI_FILE_COLOR.png)
 
 # Advanced Functionality
 
