@@ -91,7 +91,7 @@ create_base_directory = function() {
   for (i in dirs){create_directory(i)}}
 
 
-# A function to find this file location.
+# A function to find this file location. Credit: Katie Barnhart @kbarnhart
 find_this_file = function() {
   cmdArgs = commandArgs(trailingOnly = FALSE)
   needle = "--file="
