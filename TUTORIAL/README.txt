@@ -10,6 +10,8 @@ Tutorial.txt				A tutorial document with comments that provides:
 						--example commands to demonstrate WEPPCLIFF capabilities
 						--an introduction to different precipitation data types
 
+Tutorial.md				A markdown version of the tutorial (primarily) for online viewing
+
 AutoTutorial.sh				A shell script to run the tutorial automatically on a UNIX system
 
 AutoTutorial.bat			A batch script to run the tutorial automatically on a Windows system
