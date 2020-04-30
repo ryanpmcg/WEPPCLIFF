@@ -4,7 +4,6 @@ DIRECTORY=$(cd `dirname $0` && pwd)
 cd $DIRECTORY
 cd ..
 
-Rscript --vanilla WEPPCLIFF.R --args -fr t
 Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y
 Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -fn bpt -la y -verb t
 Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y -verb t -o JUNK -pd t -sdt "2000-01-01 00:00:00" -edt "2004-12-31 24:00:00"
