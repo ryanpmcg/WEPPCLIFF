@@ -2,7 +2,7 @@
 ############################## PROGRAM METADATA #############################
 #############################################################################
 
-#  Version: 1.4.1
+#  Version: 1.5
 #  Last Updated by: Ryan P. McGehee
 #  Last Updated on: 5 April 2020
 #  Purpose: This program was first designed to create an appropriate input
@@ -39,8 +39,8 @@ ________________________________________________________________________________
 # A function to print a license agreement.
 print_license_agreement = function() {
   LICENSE = {"
-  WEPP Climate File Formatter (WEPPCLIFF) Version 1.4.1
-  Copyright (c) 2019 Ryan P. McGehee
+  WEPP Climate File Formatter (WEPPCLIFF) Version 1.5
+  Copyright (c) 2020 Ryan P. McGehee
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -58,7 +58,8 @@ print_license_agreement = function() {
 
   McGehee, R.P., D.C. Flanagan, and P. Srivastava. 2020. WEPPCLIFF:
       A command-line tool to process climate inputs for soil loss models.
-      Available at: https://github.com/ryanpmcg/WEPPCLIFF
+      Journal of Open Source Software. doi:notYetAssigned
+      Repository available at: https://github.com/ryanpmcg/WEPPCLIFF
 
   Corresponding Author: R.P. McGehee
   E-mail: ryanpmcgehee@gmail.com"}
