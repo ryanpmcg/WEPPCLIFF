@@ -8,20 +8,20 @@ Follow the following steps closely!
 2. Install R version 3.6.1 or later (WEPPCLIFF was most recently validated with R-3.6.1).
 3. From the directory containing WEPPCLIFF.R run:
 
-(UNIX) bash ./INSTALLER/Install.sh  --OR-- (Windows) ./INSTALLER/Install.bat
+(UNIX) `bash ./INSTALLER/Install.sh`  --OR-- (Windows) `./INSTALLER/Install.bat`
 
 ## Run Tutorial Manually (as Intended) on UNIX or Windows.
 Open the Tutorial.txt file (and WEPPCLIFF Documentation.pdf if more information is desired) and follow the instructions within. Otherwise, follow instructions below for an automated tutorial and testing.
 
 ## Run Automated Tutorial on UNIX or Windows
-UNIX: From the directory containing WEPPCLIFF.R run: bash ./TUTORIAL/AutoTutorial.sh
+UNIX: From the directory containing WEPPCLIFF.R run: `bash ./TUTORIAL/AutoTutorial.sh`
 
-Windows: From the directory containing WEPPCLIFF.R run: ./TUTORIAL/AutoTutorial.bat
+Windows: From the directory containing WEPPCLIFF.R run: `./TUTORIAL/AutoTutorial.bat`
 
 ## Run Automated Test (Installation Validation)
-UNIX: From the directory containing WEPPCLIFF.R run: bash ./AUTOTEST/AutoTest.sh
+UNIX: From the directory containing WEPPCLIFF.R run: `bash ./AUTOTEST/AutoTest.sh`
 
-Windows: From the directory containing WEPPCLIFF.R run: ./AUTOTEST/AutoTest.bat
+Windows: From the directory containing WEPPCLIFF.R run: `./AUTOTEST/AutoTest.bat`
 
 ## Current Version
 Version 1.5 is the most recent upload to this repository. Version 1.4 focused on improvements to basic trimming operations, quality checking, and data export. Future versions are attempting to focus on ways to improve the gap filling model. The current model works well for most aspects of the climate outputs, but there is room for improvement. The current wish list includes adding rates of change and more storm characteristics to the gap filling model.
