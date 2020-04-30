@@ -11,7 +11,7 @@ Follow the following steps closely!
 (UNIX) `bash ./INSTALLER/Install.sh`  --OR-- (Windows) `./INSTALLER/Install.bat`
 
 ## Run Tutorial Manually (as Intended) on UNIX or Windows.
-Open the Tutorial.txt file (and [WEPPCLIFF Documentation](https://github.com/ryanpmcg/WEPPCLIFF/blob/master/WEPPCLIFF%20Documentation%20(v1.4.1).pdf) if more information is desired) and follow the instructions within. Otherwise, follow instructions below for an automated tutorial and testing.
+Open the [Tutorial](https://github.com/ryanpmcg/WEPPCLIFF/blob/master/TUTORIAL/Tutorial.md) (and [WEPPCLIFF Documentation](https://github.com/ryanpmcg/WEPPCLIFF/blob/master/WEPPCLIFF%20Documentation%20(v1.4.1).pdf) if more information is desired) and follow the instructions within. Otherwise, follow instructions below for an automated tutorial and testing.
 
 ## Run Automated Tutorial on UNIX or Windows
 UNIX: From the directory containing WEPPCLIFF.R run: `bash ./TUTORIAL/AutoTutorial.sh`
