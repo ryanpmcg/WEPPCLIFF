@@ -100,9 +100,11 @@ This section exists to show you how to perform installation manually if desired.
 
 Change to the root WEPPCLIFF directory (i.e. cd path\to\WEPPCLIFF).
 For my Windows machine, this is:
+
 `cd C:\WEPPCLIFF`
 
 WINDOWS: Add the path to Rscript to the system PATH. For my Windows machine running R-3.6.1, this is:
+
 `setx PATH "%PATH%;C:/Program Files/R/R-3.6.1/bin/"`
 
 WINDOWS: If that worked you need to restart your command prompt, then type: Rscript
@@ -110,6 +112,7 @@ WINDOWS: If that does not show the screen for Rscript, the PATH variable was not
 
 
 Installs all WEPPCLIFF dependencies.
+
 `Rscript --vanilla WEPPCLIFF.R --args -fr t`
 
 For slow internet connections, downloads can 'time out' and cause installation to fail.
@@ -120,25 +123,31 @@ If installation is still unsuccessful, I do not support non-WEPPCLIFF issues.
 # BASIC FUNCTIONALITY:
 
 Run an example input with default settings.
-Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv
+
+`Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv`
 
 Change the output filename, add early license agreement, and turn on verbosity.
-Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -fn bpt -la y -verb t
+
+`Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -fn bpt -la y -verb t`
 
 Change the output location, turn on graphical output, and trim the period analyzed.
-Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y -verb t -o JUNK -pd t -sdt "2000-01-01 00:00:00" -edt "2004-12-31 24:00:00"
+
+`Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y -verb t -o JUNK -pd t -sdt "2000-01-01 00:00:00" -edt "2004-12-31 24:00:00"`
 
 
 # BREAKPOINT INPUTS:
 
 Run an example single-storm, breakpoint input with cumulative precipitation and mixed units (English and metric).
-Rscript --vanilla WEPPCLIFF.R --args -f AH537_BPT_CP.csv -cp t -u m PRECIP -sm 2 -la y -ipb t
+
+`Rscript --vanilla WEPPCLIFF.R --args -f AH537_BPT_CP.csv -cp t -u m PRECIP -sm 2 -la y -ipb t`
 
 Run the same input and turn on graphical output, erosion index calculations, and export functionality.
-Rscript --vanilla WEPPCLIFF.R --args -f AH537_BPT_CP.csv -cp t -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
+
+`Rscript --vanilla WEPPCLIFF.R --args -f AH537_BPT_CP.csv -cp t -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3`
 
 Run the same command using incremental precipitation inputs.
-Rscript --vanilla WEPPCLIFF.R --args -f AH537_BPT_IP.csv -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
+
+`Rscript --vanilla WEPPCLIFF.R --args -f AH537_BPT_IP.csv -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3`
 
 
 # FIXED-INTERVAL INPUTS:
@@ -146,25 +155,32 @@ Rscript --vanilla WEPPCLIFF.R --args -f AH537_BPT_IP.csv -cp f -u m PRECIP -sm 2
 Run several variations of the same command as before using various fixed interval products.
 
 One-minute (unlimited precision) data.
-Rscript --vanilla WEPPCLIFF.R --args -f AH537_1MIN_UP.csv -pi 1 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
+
+`Rscript --vanilla WEPPCLIFF.R --args -f AH537_1MIN_UP.csv -pi 1 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3`
 
 One-minute (0.01 inch precision) data.
-Rscript --vanilla WEPPCLIFF.R --args -f AH537_1MIN.csv -pi 1 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
+
+`Rscript --vanilla WEPPCLIFF.R --args -f AH537_1MIN.csv -pi 1 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3`
 
 Five-minute (0.01 inch precision) data.
-Rscript --vanilla WEPPCLIFF.R --args -f AH537_5MIN.csv -pi 5 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
+
+`Rscript --vanilla WEPPCLIFF.R --args -f AH537_5MIN.csv -pi 5 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3`
 
 Ten-minute (0.01 inch precision) data.
-Rscript --vanilla WEPPCLIFF.R --args -f AH537_10MIN.csv -pi 10 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
+
+`Rscript --vanilla WEPPCLIFF.R --args -f AH537_10MIN.csv -pi 10 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3`
 
 Fifteen-minute (0.01 inch precision) data.
-Rscript --vanilla WEPPCLIFF.R --args -f AH537_15MIN.csv -pi 15 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
+
+`Rscript --vanilla WEPPCLIFF.R --args -f AH537_15MIN.csv -pi 15 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3`
 
 Fifteen-minute (unlimited precision) data.
-Rscript --vanilla WEPPCLIFF.R --args -f AH537_15MIN_UP.csv -pi 15 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
+
+`Rscript --vanilla WEPPCLIFF.R --args -f AH537_15MIN_UP.csv -pi 15 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3`
 
 Fifteen-minute (0.1 inch precision) data.
-Rscript --vanilla WEPPCLIFF.R --args -f AH537_15MIN_HT.csv -pi 15 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
+
+`Rscript --vanilla WEPPCLIFF.R --args -f AH537_15MIN_HT.csv -pi 15 -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3`
 
 Guess which one of all the above inputs is used for national conservation planning efforts (as of April 2020)... Yep. The last one. Sigh.
 
@@ -172,16 +188,20 @@ Guess which one of all the above inputs is used for national conservation planni
 # ADVANCED FUNCTIONALITY:
 
 Run the first example again with quality checking and graphical output.
-Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y -verb t -qc t -pd t
+
+`Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y -verb t -qc t -pd t`
 
 Run the example again with gap filling (quick version) and binary data export.
-Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y -verb t -qc t -pd t -id t -qi t -ed 1
+
+`Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y -verb t -qc t -pd t -id t -qi t -ed 1`
 
 If you are patient, run the example again with gap filling (the super-tedious, has-to-be-right, OCD version) and filling verbosity on.
-Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y -verb t -qc t -pd t -id t -iv t -ed 1
+
+`Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y -verb t -qc t -pd t -id t -iv t -ed 1`
 
 Begin an R session in either RStudio or your terminal (whichever you prefer) and load the binary data using the following:
-data = readRDS("C:/WEPPCLIFF/EXPORT/KMQE.rds")
+
+`data = readRDS("C:/WEPPCLIFF/EXPORT/KMQE.rds")`
 
 Access any object in the primary data structure (a list of objects) with the following:
 
