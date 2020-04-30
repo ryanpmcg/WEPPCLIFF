@@ -1,13 +1,13 @@
 @ECHO OFF
 DIR "C:\Program Files\R" /s /b | FIND "bin\Rscript.exe" > TMP.txt
 SET /p PathToRscript=<TMP.txt
-DIR "C:\" /s /b | FIND "C:\WEPPCLIFF" > TMP.txt
+DIR "C:\" /b | FIND "C:\WEPPCLIFF" > TMP.txt
 SET /p PathToWEPPCLIFF=<TMP.txt
 DEL TMP.txt
-CD %PathToWEPPCLIFF%
+CD "C:\WEPPCLIFF"
 
 CLS
-ECHO Verifying WEPPCLIFF installation (i.e. if you have not completed installation & ECHO this test will fail). This test will only take a couple minutes to finish and & ECHO will begin in a few seconds. Please check back momentarily for the results. & ECHO.
+ECHO Verifying WEPPCLIFF installation (i.e. if you have not completed installation & ECHO this test will fail). The test assumes that WEPPCLIFF is installed in the recommended directory (i.e. C:\WEPPCLIFF) and will not work otherwise. This test will only take a couple minutes to finish and & ECHO will begin in a few seconds. Please check back momentarily for the results. & ECHO.
 TIMEOUT 10
 
 "%PathToRscript%" --vanilla WEPPCLIFF.R --args -o AUTOTEST/OUTPUT -e AUTOTEST/OUTPUT -fn AutoTest.1 -f ASOS_BPT_KMQE.csv -la y -verb t -ed 1
@@ -30,4 +30,4 @@ FOR %%I IN (1 2 3 4 5 6 7 8) DO (
 	)
 
 IF %FAIL%==0 (ECHO. & ECHO CONGRATULATIONS^^! Your WEPPCLIFF installation was successfully verified by 8 & ECHO automated test runs and 16 highly unique file outputs. Now you are ready to use & ECHO WEPPCLIFF with peace of mind, knowing everything is working as intended. & ECHO ) ELSE (ECHO. & ECHO OOPS^^! Something is not right. Your WEPPCLIFF installation failed at least one & ECHO of 8 automated test runs. Please remove and reinstall WEPPCLIFF then try this & ECHO test again. If the problem persists and you believe the problem lies within & ECHO WEPPCLIFF, please create an issue at: https://github.com/ryanpmcg/WEPPCLIFF & ECHO  & ECHO Thank you^^! Hopefully the WEPPCLIFF community can help you get up and running & ECHO soon. & ECHO.)
-TIMEOUT 60
+TIMEOUT 120
