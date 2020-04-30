@@ -91,8 +91,22 @@ create_base_directory = function() {
   for (i in dirs){create_directory(i)}}
 
 
+# A function to find this file location.
+find_this_file = function() {
+  cmdArgs = commandArgs(trailingOnly = FALSE)
+  needle = "--file="
+  match = grep(needle, cmdArgs)
+  if (length(match) > 0) {return(normalizePath(sub(needle, "", cmdArgs[match])))
+  } else {return(normalizePath(sys.frames()[[1]]$ofile))}}
+
+
 # A function to determine directory location.
 set_wds = function() {
+  
+  # Set a global home directory.
+  home.dir <<- dirname(find_this_file())
+  
+  # Set base directories.
   dir.names = c("lib.dir", "in.dir", "out.dir", "ex.dir", "plot.dir")
   dir.locs = c(l, d, o, e, p)
   for (i in 1:length(dir.names)) {assign(dir.names[i], dir.locs[i], envir = .GlobalEnv)}}
