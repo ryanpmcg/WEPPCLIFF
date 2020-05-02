@@ -85,7 +85,7 @@ for ITER in {1..8}
 		if [ `printf $BENCH` == `printf $TEMP` ]; then
 			printf "\n  Passed RDS Test $ITER"
 		else
-			printf "\n  RDS Test $ITER Code: 0"
+			printf "\n  RDS Test $ITER Completed"
 		fi
 
 		printf "\n"
