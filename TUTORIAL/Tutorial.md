@@ -112,7 +112,7 @@ WINDOWS: If that worked you need to restart your command prompt, then type: `Rsc
 WINDOWS: If that does not show the screen for Rscript, the PATH variable was not successfully updated, and you will need to use the full path to Rscript everytime you see 'Rscript' below.
 
 
-Installs all WEPPCLIFF dependencies.
+The following command installs all WEPPCLIFF dependencies.
 
 `Rscript --vanilla WEPPCLIFF.R --args -fr t`
 
