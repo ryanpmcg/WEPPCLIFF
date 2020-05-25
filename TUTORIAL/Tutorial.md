@@ -107,7 +107,8 @@ WINDOWS: Add the path to Rscript to the system PATH. For my Windows machine runn
 
 `setx PATH "%PATH%;C:/Program Files/R/R-3.6.1/bin/"`
 
-WINDOWS: If that worked you need to restart your command prompt, then type: Rscript
+WINDOWS: If that worked you need to restart your command prompt, then type: `Rscript`
+
 WINDOWS: If that does not show the screen for Rscript, the PATH variable was not successfully updated, and you will need to use the full path to Rscript everytime you see 'Rscript' below.
 
 
