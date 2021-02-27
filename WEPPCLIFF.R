@@ -1037,8 +1037,10 @@ time_bounds = function(start, end) {
   
   # Determine bounds if event simulation is specified.
   if (sm == 2) {
-    bounds = c(first.dt, last.dt)
-    if (first.dt > last.dt) {stop(lr, lr, "Insufficient Data: At least one precipitation event and daily data for the same day must be available with your DATETIME CONTROL ARGUMENTS.", lr, lr, collapse = "")}}
+    good.start = start_of_day(first.dt)
+    good.end = end_of_day(last.dt)
+    bounds = c(good.start, good.end, first.dt, last.dt)
+    if (good.start > good.end) {stop(lr, lr, "Insufficient Data: At least one precipitation event and daily data for the same day must be available with your DATETIME CONTROL ARGUMENTS.", lr, lr, collapse = "")}}
   
   return(bounds)}
 
@@ -1085,6 +1087,21 @@ start_of_year = function(date) {
   return(good.start)}
 
 
+# A function to find the exact beginning of the next full calendar year.
+start_of_day = function(date) {
+  
+  # Determine the actual start and setup rounded times.
+  real.start = as.POSIXlt(date, format = dtf1)
+  good.start = real.start
+
+  # Determine a good start for the complete data.
+  good.start$hour = 0
+  good.start$min = 0
+  good.start$sec = 0
+  
+  return(good.start)}
+
+
 # A function to find the exact end of the last full calendar year.
 end_of_year = function(date) {
   
@@ -1123,6 +1140,21 @@ end_of_year = function(date) {
   if (toupper(rtb) == "D") {if (day.end < good.end) {good.end$year = good.end$year - 1}}
   if (toupper(rtb) == "H") {if (hour.end < good.end) {good.end$year = good.end$year - 1}}
   if (toupper(rtb) == "F") {if (real.end < good.end) {good.end$year = good.end$year - 1}}
+  
+  return(good.end)}
+
+
+# A function to find the exact end of the last full calendar year.
+end_of_day = function(date) {
+  
+  # Determine the actual end and setup rounded times.
+  real.end = as.POSIXlt(date, format = dtf1)
+  good.end = real.end
+
+  # Determine a good end for the complete data.
+  good.end$hour = 23
+  good.end$min = 59
+  good.end$sec = 59
   
   return(good.end)}
 
