@@ -24,7 +24,7 @@ UNIX: From the directory containing WEPPCLIFF.R run: `bash ./AUTOTEST/AutoTest.s
 Windows: From the directory containing WEPPCLIFF.R run: `./AUTOTEST/AutoTest.bat`
 
 ## Current Version
-Version 1.5 is the most recent upload to this repository. Version 1.4 focused on improvements to basic trimming operations, quality checking, and data export. Future versions are attempting to focus on ways to improve the gap filling model. The current model works well for most aspects of the climate outputs, but there is room for improvement. The current wish list includes adding rates of change and more storm characteristics to the gap filling model.
+Version 1.5.1 is the most recent upload to this repository, which included a minor improvement to the gap-filling model. Improvements to the gap-filling model (including a comprehensive validation of its capabilities) are planned for the next major release.
 
 ## Contributions
 Contributions are always warmly welcomed. Any contributions that materially improve performance, capabilities, accuracy, compatibility, etc. will be gladly incorporated in the source code, credited, and distributed through this repository. Ideally, contributions should proceed something like the following, but this should not be legalistic in any way:
