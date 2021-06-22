@@ -39,7 +39,7 @@ ________________________________________________________________________________
 # A function to print a license agreement.
 print_license_agreement = function() {
   LICENSE = {"
-  WEPP Climate File Formatter (WEPPCLIFF) Version 1.5
+  WEPP Climate File Formatter (WEPPCLIFF) Version 1.5.1
   Copyright (c) 2020 Ryan P. McGehee
 
   This program is free software: you can redistribute it and/or modify
