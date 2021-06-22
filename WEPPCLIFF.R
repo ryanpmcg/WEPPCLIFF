@@ -1509,7 +1509,7 @@ fill_data = function(data, pcp.ts.in, dly.ts.in, dly.ts.out, pcp.ts.out) {
   
   # Impute missing daily solar radiation data.
   if (toupper(verb) == "T") {cat(lr,"Imputing daily solar radiation data...")}
-  dly.var.df[,1:2] = impute_by_df(dly.var.df, "midastouch")[,1:2]
+  dly.var.df[,1:2] = impute_by_cluster(dly.var.df, "midastouch")[,1:2]
   
   # Impute missing daily maximum and minimum temperature data.
   if (toupper(verb) == "T") {cat(lr,"Imputing daily max/min temperature data...")}
@@ -2652,7 +2652,7 @@ flagcount = c(1,
               49)
 
 var.e.list = c("lr", "args", flags, "u.loc", "ee.loc", "home.dir", "lib.dir", "package.list", "par.pack.list")
-package.list = c("backports", "crayon", "vctrs", "readr", "rlist", "iterators", "foreach", "doParallel", "EnvStats", "mice", "RcppParallel", "withr", "ggplot2", "profvis", "data.table", "jsonlite", "cli")
+package.list = c("backports", "crayon", "vctrs", "readr", "rlist", "iterators", "foreach", "doParallel", "EnvStats", "mice", "RcppParallel", "withr", "ggplot2", "profvis", "data.table", "jsonlite")
 par.pack.list = c("backports", "crayon", "vctrs", "readr", "rlist", "EnvStats", "mice", "withr", "ggplot2", "profvis", "data.table", "jsonlite")
 function.e.list = c(lsf.str())
 export.list = c(var.e.list, function.e.list)
