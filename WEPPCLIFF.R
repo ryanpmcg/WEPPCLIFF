@@ -2652,8 +2652,8 @@ flagcount = c(1,
               49)
 
 var.e.list = c("lr", "args", flags, "u.loc", "ee.loc", "home.dir", "lib.dir", "package.list", "par.pack.list")
-package.list = c("backports", "crayon", "vctrs", "tzdb", "readr", "rlist", "iterators", "foreach", "doParallel", "EnvStats", "mice", "RcppParallel", "withr", "ggplot2", "profvis", "data.table", "jsonlite")
-par.pack.list = c("backports", "crayon", "vctrs", "tzdb", "readr", "rlist", "EnvStats", "mice", "withr", "ggplot2", "profvis", "data.table", "jsonlite")
+package.list = c("backports", "crayon", "vctrs", "tzdb", "vroom", "cli", "readr", "rlist", "iterators", "foreach", "doParallel", "EnvStats", "mice", "RcppParallel", "withr", "ggplot2", "profvis", "data.table", "jsonlite")
+par.pack.list = c("backports", "crayon", "vctrs", "tzdb", "vroom", "cli", "readr", "rlist", "EnvStats", "mice", "withr", "ggplot2", "profvis", "data.table", "jsonlite")
 function.e.list = c(lsf.str())
 export.list = c(var.e.list, function.e.list)
 
