@@ -2,7 +2,7 @@
 ############################## PROGRAM METADATA #############################
 #############################################################################
 
-#  Version: 1.5.2
+#  Version: 1.5.1
 #  Last Updated by: Ryan P. McGehee
 #  Last Updated on: 5 April 2020
 #  Purpose: This program was first designed to create an appropriate input
@@ -39,8 +39,8 @@ ________________________________________________________________________________
 # A function to print a license agreement.
 print_license_agreement = function() {
   LICENSE = {"
-  WEPP Climate File Formatter (WEPPCLIFF) Version 1.5.2
-  Copyright (c) 2021 Ryan P. McGehee
+  WEPP Climate File Formatter (WEPPCLIFF) Version 1.5.1
+  Copyright (c) 2020 Ryan P. McGehee
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -306,9 +306,9 @@ load_input_file = function(f) {
     
     # Load file otherwise.
     if (toupper(verb) == "T") {cat(lr, "Loading input file... ")}
-    if (length(txt) == 1){file = suppressMessages(read_table(f, delim, col_types=cols(DT_1="c", DT_2="c", DT_3="c")))}
-    if (length(tsv) == 1){file = suppressMessages(read_tsv(f, col_types=cols(DT_1="c", DT_2="c", DT_3="c")))}
-    if (length(csv) == 1){file = suppressMessages(read_csv(f, col_types=cols(DT_1="c", DT_2="c", DT_3="c")))}})
+    if (length(txt) == 1){file = suppressMessages(read_table(f, delim))}
+    if (length(tsv) == 1){file = suppressMessages(read_tsv(f))}
+    if (length(csv) == 1){file = suppressMessages(read_csv(f))}})
   
   setwd(home.dir)
   return(file)}
@@ -487,36 +487,31 @@ create_duration_data = function(data, x) {
     # Convert to datetime (POSIX Count).
     if (length(na.omit(data[[j]][[dt_list[j]]])) == 0) {stop("Datetime data may not be handled correctly. Please check the input file(s) and arguments.")}
     if (length(na.omit(data[[j]][[dt_list[j]]])) > 0) {
-      data[[j]][[dt_list[j]]] = format(as.POSIXct(as.character(data[[j]][[dt_list[j]]]), format = dtf_list[j]), format = dtf_list[j])
+      data[[j]][[dt_list[j]]] = as.POSIXct(as.character(data[[j]][[dt_list[j]]]), format = dtf_list[j])
       data[[j]] = data[[j]][complete.cases(data[[j]][,1]),]}
-
+    
     # Handle precipitation and non-precipitation breaks.
     if (j == 1) {
       
       # Convert fixed format to breakpoint format if appropriate.
       if (toupper(pi) != "F") {
         precip.interval = as.numeric(pi)
-        new.dates = as.POSIXct(data[[j]][[dt_list[j]]]) - (60 * precip.interval)
+        new.dates = data[[j]][[dt_list[j]]] - (60 * precip.interval)
         rmv.dates = which(new.dates %in% data[[j]][[dt_list[j]]])
-        if (length(rmv.dates) > 0) {
-          add.dates = new.dates[-rmv.dates]
-          zeroes = c(rep(0, length(add.dates)))
-          new.rows = data.frame(add.dates, zeroes)
-          names(new.rows) = c("DT_1", "PRECIP")
-          data[[j]] = rbind(data[[j]], new.rows)
-        }
-      }
-    }
+        if (length(rmv.dates) > 0) {add.dates = new.dates[-rmv.dates]}
+        zeroes = c(rep(0, length(add.dates)))
+        new.rows = data.frame(add.dates, zeroes)
+        names(new.rows) = c("DT_1", "PRECIP")
+        data[[j]] = rbind(data[[j]], new.rows)}}
     
     # Sort data.
     data[[j]] = data[[j]][order(data[[j]][[dt_list[j]]]),]
-
+    
     # Calculate time differences in minutes.
     dif = difftime(tail(data[[j]][[dt_list[j]]], -1), head(data[[j]][[dt_list[j]]], -1), units = "mins")
     dif = as.numeric(dif)
     dif = c(dif[1], dif)
-    data[[j]]$DUR = dif
-    data[[j]][[dt_list[j]]] = as.POSIXlt(data[[j]][[dt_list[j]]])}
+    data[[j]]$DUR = dif}
   
   # Keep only positive precipitation values and potential storm starts.
   p_rows = which(data[[1]]$PRECIP != 0)
@@ -528,7 +523,7 @@ create_duration_data = function(data, x) {
   
   # Modify midnight breakpoint crossings.
   data[[1]] = modify_midnight_breakpoints(df = data[[1]], dtf = dtf1)
-
+  
   return(data)}
 
 
@@ -547,7 +542,7 @@ modify_midnight_breakpoints = function(df, dtf) {
   # Calculate new midnight break chracteristics.
   pcp.frac = -dif.vec[crosses] / df$DUR[crosses]
   pcp.new = pcp.frac * df$PRECIP[crosses]
-  dt.new = format(as.POSIXlt(as.POSIXct(df$DT_1[crosses]) - df$TFM[crosses] * 60), "%Y-%m-%d %H:%M:%S")
+  dt.new = df$DT_1[crosses] - df$TFM[crosses] * 60
   dur.new = df$DUR[crosses] - df$TFM[crosses]
   
   # Reduce the original precipitation after the midnight break
@@ -560,7 +555,7 @@ modify_midnight_breakpoints = function(df, dtf) {
   # Create a new dataframe with midnight breakpoints.
   df.new = data.frame(dt.new, pcp.new, dur.new)
   names(df.new) = names(df)
-
+  
   # Combine dataframes.
   df.out = rbind(df, df.new)
   df.out = df.out[order(df.out$DT_1),]
@@ -1212,7 +1207,7 @@ calculate_erosion_indices = function(data, storm.list, storm.df) {
       data[[storm.list]][[storm]][[paste(name, "_KE", sep = "")]] = data[[storm.list]][[storm]][[paste(name, "_ED", sep = "")]] * data[[storm.list]][[storm]]$PRECIP}}
   
   # Calculate and store other important storm parameters.
-  dtimes = sapply(data[[storm.list]], function(x) format(as.POSIXct(x$DT_1[1]), "%Y-%m-%d %H:%M:%S"), USE.NAMES = F)
+  dtimes = sapply(data[[storm.list]], function(x) x$DT_1[1], USE.NAMES = F)
   depth = sapply(data[[storm.list]], function(x) sum(x$PRECIP, na.rm = T), USE.NAMES = F)
   dur = sapply(data[[storm.list]], function(x) max(x$CUM, na.rm = T) - min(x$CUM, na.rm = T) + x$DUR[1], USE.NAMES = F)
   pdur = sapply(data[[storm.list]], function(x) sum(x$DUR, na.rm = T), USE.NAMES = F)
@@ -1328,7 +1323,6 @@ process_alt_data = function(data, alt.in) {
   if (toupper(verb) == "T") {cat(lr,"Processing alternative data...")}
   
   # Calculate dew point temperature time series.
-  data[[alt.in]]$DT_2 = as.POSIXlt(data[[alt.in]]$DT_2)
   dates = format(data[[alt.in]]$DT_2, format = "%Y%m%d")
   dp.temp = dew_point_temperature(data[[alt.in]]$AIR_TEMP, data[[alt.in]]$REL_HUM)
   dp.temp = vec_find_replace(dp.temp, find = T, null = T, nan = T, na = T, inf = T, vals = -99999, replace = NA)
@@ -1377,7 +1371,6 @@ process_precip_data = function(data, pcp.in, dly.ts, mly.ts, yly.ts, mly.mn) {
   if (toupper(verb) == "T") {cat(lr,"Processing precipitation data...")}
   
   # Generate daily event metadata and find daily precipitation data.
-  data[[pcp.in]]$DT_1 = as.POSIXlt(data[[pcp.in]]$DT_1)
   dates = format(data[[pcp.in]]$DT_1, format = "%Y%m%d")
   d.bps = aggregate(data[[pcp.in]]$PRECIP, by = list(dates), FUN = length, simplify = F)
   d.events = aggregate(data[[pcp.in]]$SID, by = list(dates), FUN = unique, simplify = F, na.rm = !pmd)$x
@@ -1480,7 +1473,7 @@ fill_data = function(data, pcp.ts.in, dly.ts.in, dly.ts.out, pcp.ts.out) {
   # Create clustering column for daily and precipitation dataframes.
   data[[pcp.ts.out]] = data.frame(data[[pcp.ts.in]]$DT_1, na.omit(create_cluster_col(data[[pcp.ts.in]], "DT_1", "%Y-%m-%d %H:%M:%S")))
   data[[dly.ts.out]] = create_cluster_col(data[[dly.ts.in]], "YYYYMMDD", "%Y%m%d")
-
+  
   # Rename columns.
   names(data[[pcp.ts.out]]) = c("DT_1", names(data[[pcp.ts.out]][,-1]))
   
@@ -1494,7 +1487,7 @@ fill_data = function(data, pcp.ts.in, dly.ts.in, dly.ts.out, pcp.ts.out) {
   dly.var.df$EVENT[dly.pcp.df$PRECIP > 0] = 1
   dly.var.df$EVENT = as.factor(dly.var.df$EVENT)
   dly.pcp.df$BPS[is.na(dly.pcp.df$BPS)] = 0
-
+  
   # Create split factor
   dly.pcp.df$COUNT = 1:nrow(dly.pcp.df)
   pcp.present = is.na(dly.pcp.df$BPS) == F
@@ -1562,7 +1555,6 @@ fill_data = function(data, pcp.ts.in, dly.ts.in, dly.ts.out, pcp.ts.out) {
   names(dly.eve.df) = c(names(dly.eve.var.df[,-1]), names(dly.eve.pcp.df), "YYYYMMDD")
   
   # Recompute clusters.
-  dly.eve.df[["YYYYMMDD"]] = as.character(dly.eve.df[["YYYYMMDD"]])
   dly.eve.df = create_cluster_col(dly.eve.df, "YYYYMMDD", "%Y%m%d")
   dly.eve.df = dly.eve.df[complete.cases(dly.eve.df[,1:9]), 2:ncol(dly.eve.df)]
   
@@ -1612,16 +1604,14 @@ fill_data = function(data, pcp.ts.in, dly.ts.in, dly.ts.out, pcp.ts.out) {
   pcp.ts.df = rbindlist(fil.ts.list)
   
   # Recompute clusters.
-  pcp.ts.df[["YYYYMMDD"]] = as.character(pcp.ts.df[["YYYYMMDD"]])
   pcp.ts.df = create_cluster_col(pcp.ts.df[,-3], "YYYYMMDD", "%Y%m%d")
   pcp.ts.df = pcp.ts.df[complete.cases(pcp.ts.df$DT_1),]
   
   # Create imputation dataframe.
-  datetimes = format(as.POSIXct(pcp.ts.df$DT_1), "%Y-%m-%d %H:%M:%S")
   imp.ts.df = pcp.ts.df[,c(2, 4, 5)]
-  imp.ts.df$HOUR = as.numeric(substr(datetimes, 12, 13))
-  imp.ts.df$MINUTE = as.numeric(substr(datetimes, 15, 16))
-  imp.ts.df$SECOND = as.numeric(substr(datetimes, 18, 19))
+  imp.ts.df$HOUR = as.numeric(substr(pcp.ts.df$DT_1, 12, 13))
+  imp.ts.df$MINUTE = as.numeric(substr(pcp.ts.df$DT_1, 15, 16))
+  imp.ts.df$SECOND = as.numeric(substr(pcp.ts.df$DT_1, 18, 19))
   imp.ts.df[is.na(pcp.ts.df$PRECIP) == T, 2:6] = NA
   
   # Impute missing precipitation time series values.
@@ -1681,10 +1671,10 @@ fill_data = function(data, pcp.ts.in, dly.ts.in, dly.ts.out, pcp.ts.out) {
 create_cluster_col = function(in.df, dt.col.name, dt.format) {
   
   # Determine start and end times.
-  in.df[[dt.col.name]] = format(as.POSIXct(in.df[[dt.col.name]], format = dt.format), dt.format)
+  in.df[[dt.col.name]] = as.character(in.df[[dt.col.name]])
   start = min(as.Date(in.df[[dt.col.name]], format = dt.format))
   end = max(as.Date(in.df[[dt.col.name]], format = dt.format))
-
+  
   # Stop if there are less than 50 observations.
   if (length(na.omit(in.df)[[dt.col.name]]) < 50) {stop("Insufficient Data: at least 50 complete observations of all variables must be present for gap filling.")}
   
@@ -1751,6 +1741,7 @@ create_cluster_col = function(in.df, dt.col.name, dt.format) {
   # Create merged dataframe.
   merge.df = merge(out.df, in.df, by = dt.col.name, all = T)
   names(merge.df) = c("YYYYMMDD", names(merge.df)[2:ncol(merge.df)])
+  
   return(merge.df)}
 
 
@@ -1905,9 +1896,9 @@ graph_data = function(data) {
         setwd("OUTPUT")
         create_directory(i)
         setwd(i)
-        if (i == "ANNUAL"){try(annual_plots(data, 12, 20, var.nm[j], pretty.nm[j], var.u[j], stat.nm), silent = T)}
-        if (i == "MONTHLY"){try(monthly_plots(data, 13, 21, var.nm[j], pretty.nm[j], var.u[j], stat.nm), silent = T)}
-        if (i == "DAILY"){try(daily_plots(data, 10, 18, var.nm[j], pretty.nm[j], var.u[j], stat.nm, plot.type[j]), silent = T)}
+        if (i == "ANNUAL"){annual_plots(data, 12, 20, var.nm[j], pretty.nm[j], var.u[j], stat.nm)}
+        if (i == "MONTHLY"){monthly_plots(data, 13, 21, var.nm[j], pretty.nm[j], var.u[j], stat.nm)}
+        if (i == "DAILY"){daily_plots(data, 10, 18, var.nm[j], pretty.nm[j], var.u[j], stat.nm, plot.type[j])}
         if (toupper(ei) == "T") {
           if (i == "STORMS"){storm_plots(data, 9, 17, stat.nm)}}}}}
   
@@ -2030,12 +2021,12 @@ daily_plots = function(data, og.df, gf.df, var.nm, pty.nm, var.u, stat.nm, plot.
   dt.vec = as.Date(as.character(data[[og.df]]$YYYYMMDD), format = "%Y%m%d")
   var.gf = NULL
   dt.gf = NULL
-
+  
   # Load gap filled data if appropriate.
   if (toupper(id) == "T") {
     var.gf = data[[gf.df]][[var.nm]]
     dt.gf = as.Date(as.character(data[[gf.df]]$YYYYMMDD), format = "%Y%m%d")
-
+    
     # Remove original values.
     dups = which(!is.na(var.vec))
     var.gf[dups] = NA}
@@ -2313,7 +2304,6 @@ create_cli_file = function(data, header, export) {
   df = export[[1]]
   daily_df = export[[2]]
   pcp_df = data[[pcp.loc]]
-  pcp_df$DT_1 = format(as.POSIXct(pcp_df$DT_1), "%Y-%m-%d %H:%M:%S")
   
   # Initialize loop counters.
   current.pcp = 1
@@ -2438,7 +2428,7 @@ stop_quietly = function() {
 
 # A function to execute a filling and post-filling workflow.
 fill_workflow = function(data) {
-
+  
   # Perform filling routines.
   data = fill_data(data, 5, 10, 18, 15)
   alt <<- "f"
@@ -2679,8 +2669,6 @@ export.list = c(var.e.list, function.e.list)
 
 # Move and uncomment to print global objects.
 #print(names(as.list(.GlobalEnv)))
-#saveRDS(data, "C:/RDebug/temp2.rds")
-#data = readRDS("C:/RDebug/temp2.rds")
 
 
 #############################################################################
