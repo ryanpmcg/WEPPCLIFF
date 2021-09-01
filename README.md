@@ -5,7 +5,7 @@ An R-based command line tool designed to prepare climate inputs for WEPP, which 
 Follow the following steps closely! 
 
 1. Clone this repository to your own preferred location (for Windows, it is recommended to use the C:/ drive).
-2. Install R version 3.6.1 or later (WEPPCLIFF was most recently validated with R-3.6.1).
+2. Install R version 3.6.1 or later (WEPPCLIFF was most recently validated with R-4.1.0).
 3. From the directory containing WEPPCLIFF.R run:
 
 (UNIX) `bash ./INSTALLER/Install.sh`  --OR-- (Windows) `./INSTALLER/Install.bat`
@@ -54,16 +54,20 @@ WEPPCLIFF is grateful to the open source community and relies on the hard work o
 1. backports
 2. crayon
 3. vctrs
-4. readr
-5. rlist
-6. iterators
-7. foreach
-8. doParallel
-9. EnvStats
-10. mice
-11. RcppParallel
-12. withr
-13. ggplot2
-14. profvis
-15. data.table
-16. climextRemes
+4. tzdb
+5. vroom
+6. cli
+7. readr
+8. rlist
+9. iterators
+10. foreach
+11. doParallel
+12. EnvStats
+13. mice
+14. RcppParallel
+15. withr
+16. ggplot2
+17. profvis
+18. data.table
+19. jsonlite
+20. climextRemes
