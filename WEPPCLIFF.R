@@ -183,6 +183,7 @@ assign_args_to_vars = function() {
 assign_empty_args = function() {
   
   # Execute initial assignment.
+  runif(1) #Forces creation of the global variable: .Random.seed
   if (length(d) == 0){assign("d", paste(home.dir, "/INPUT", sep = ""), envir = .GlobalEnv)} # Def: current directory
   if (length(o) == 0){assign("o", paste(home.dir, "/OUTPUT", sep = ""), envir = .GlobalEnv)} # Def: current directory
   if (length(e) == 0){assign("e", paste(home.dir, "/EXPORT", sep = ""), envir = .GlobalEnv)} # Def: current directory
@@ -1756,7 +1757,7 @@ create_cluster_col = function(in.df, dt.col.name, dt.format) {
 
 # A function to impute missing data by cluster.
 impute_by_cluster = function(fil.df, imp.method) {
-  
+
   # Get unique clusters for filling.
   clusters = unique(fil.df$CLUSTER)
   
