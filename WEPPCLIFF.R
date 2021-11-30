@@ -488,7 +488,7 @@ create_duration_data = function(data, x) {
     # Convert to datetime (POSIX Count).
     if (length(na.omit(data[[j]][[dt_list[j]]])) == 0) {stop("Datetime data may not be handled correctly. Please check the input file(s) and arguments.")}
     if (length(na.omit(data[[j]][[dt_list[j]]])) > 0) {
-      data[[j]][[dt_list[j]]] = format(as.POSIXct(as.character(data[[j]][[dt_list[j]]]), format = dtf_list[j]), format = dtf_list[j])
+      data[[j]][[dt_list[j]]] = format(as.POSIXct(gsub("T|Z", " ", as.character(data[[j]][[dt_list[j]]])), format = dtf_list[j]), format = dtf_list[j])
       data[[j]] = data[[j]][complete.cases(data[[j]][,1]),]}
 
     # Handle precipitation and non-precipitation breaks.
@@ -1028,11 +1028,11 @@ time_bounds = function(start, end) {
   
   # Get the first time or user start time if later.
   if (toupper(sdt) == "START"){first.dt = start}
-  if (toupper(sdt) != "START"){first.dt = max(strptime(sdt, format = dtf1), start, na.rm = T)}
+  if (toupper(sdt) != "START"){first.dt = strptime(sdt, format = dtf1)}
   
   # Get the last time or user end time if earlier.
   if (toupper(edt) == "END"){last.dt = end}
-  if (toupper(edt) != "END"){last.dt = min(strptime(edt, format = dtf1), end, na.rm = T)}
+  if (toupper(edt) != "END"){last.dt = strptime(edt, format = dtf1)}
   
   # Determine bounds if continuous simulation is specified.
   if (sm == 1) {
@@ -1514,11 +1514,11 @@ fill_data = function(data, pcp.ts.in, dly.ts.in, dly.ts.out, pcp.ts.out) {
   # Create a column to track rows for recombining.
   dly.var.df = data.frame(as.factor(dly.var.df$CLUSTER), dly.mis.df[,4:10])
   names(dly.var.df) = c("CLUSTER", names(dly.var.df)[-1])
-  
+
   # Impute missing daily solar radiation data.
   if (toupper(verb) == "T") {cat(lr,"Imputing daily solar radiation data...")}
   dly.var.df[,1:2] = impute_by_cluster(dly.var.df, "midastouch")[,1:2]
-  
+
   # Impute missing daily maximum and minimum temperature data.
   if (toupper(verb) == "T") {cat(lr,"Imputing daily max/min temperature data...")}
   dly.var.df[,1:4] = impute_by_cluster(dly.var.df[,1:4], "midastouch")
@@ -2031,12 +2031,14 @@ daily_plots = function(data, og.df, gf.df, var.nm, pty.nm, var.u, stat.nm, plot.
   dt.vec = as.Date(as.character(data[[og.df]]$YYYYMMDD), format = "%Y%m%d")
   var.gf = NULL
   dt.gf = NULL
+  dt.range = c(min(dt.vec), max(dt.vec))
 
   # Load gap filled data if appropriate.
   if (toupper(id) == "T") {
     var.gf = data[[gf.df]][[var.nm]]
     dt.gf = as.Date(as.character(data[[gf.df]]$YYYYMMDD), format = "%Y%m%d")
-
+    dt.range = c(min(dt.gf, dt.range[1]), max(dt.gf, dt.range[2]))
+    
     # Remove original values.
     dups = which(!is.na(var.vec))
     var.gf[dups] = NA}
@@ -2044,7 +2046,7 @@ daily_plots = function(data, og.df, gf.df, var.nm, pty.nm, var.u, stat.nm, plot.
   # Plot time series (original vs gap filled).
   if (length(na.omit(var.vec)) > 0) {
     png(paste(stat.nm, pty.nm, "DAILY TS.png", sep = " "), width = 2160, height = 1080, pointsize = 36)
-    plot(dt.vec, var.vec, type = plot.type, main = paste("DAILY", pty.nm, "TIMESERIES", sep = " "), xlab = "DATE", ylab = paste(pty.nm, " (", var.u, ")", sep = ""))
+    plot(dt.vec, var.vec, type = plot.type, main = paste("DAILY", pty.nm, "TIMESERIES", sep = " "), xlim = dt.range, xlab = "DATE", ylab = paste(pty.nm, " (", var.u, ")", sep = ""))
     if (length(var.gf) > 0) {lines(dt.gf, var.gf, type = plot.type, col = "red")}
     par(fig=c(0, 1, 0, 1), oma=c(0, 0, 0, 0), mar=c(0, 0, 0, 0), new=TRUE)
     plot(0, 0, type='n', bty='n', xaxt='n', yaxt='n')
