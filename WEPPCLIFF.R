@@ -2347,7 +2347,7 @@ generate_export_data = function(data, dly.loc, pcp.loc) {
   wvel = format(round(as.numeric(daily_df$W_VEL), 1), justify = "right", width = 5, nsmall = 1)
   wdir = format(round(as.numeric(daily_df$W_DIR), 1), justify = "right", width = 5, nsmall = 1)
   dew = format(round(as.numeric(daily_df$DP_TEMP), 1), justify = "right", width = 5, nsmall = 1)
-  amount = format(round(as.numeric(dailyMergeDF$AMOUNT), 1), justify = "right", width = 5, nsmall = 1)
+  amount = format(round(as.numeric(dailyMergeDF$AMOUNT), 2), justify = "right", width = 5, nsmall = 2)
   duration = format(round(as.numeric(dailyMergeDF$DURATION), 2), justify = "right", width = 5, nsmall = 2)
   tp = format(round(as.numeric(dailyMergeDF$TP), 2), justify = "right", width = 5, nsmall = 2)
   ip = format(round(as.numeric(dailyMergeDF$IP), 2), justify = "right", width = 5, nsmall = 2)
@@ -2422,7 +2422,7 @@ create_cli_file = function(data, header, export) {
   for (i in daily_rows){
     
     # Handle breakpoint and non-breakpoint formats.
-    if (bf == 0) {temp.new = paste(lr, "  ", df[i,1], "   ", df[i,2], "  ", df[i,3], "  ", df[i,4], " ", df[i,5], " ", df[i,6], " ", df[i,7], " ", df[i,8], "  ", df[i,9], "  ", df[i,10], "  ", df[i,11], "  ", df[i,12], "  ", df[i,13], sep = "")}
+    if (bf == 0) {temp.new = paste(lr, "  ", df[i,1], "   ", df[i,2], "  ", df[i,3], " ", df[i,4], " ", df[i,5], " ", df[i,6], " ", df[i,7], " ", df[i,8], "  ", df[i,9], "  ", df[i,10], "  ", df[i,11], "  ", df[i,12], "  ", df[i,13], sep = "")}
     if (bf == 1) {temp.new = paste(lr, "  ", df[i,1], "   ", df[i,2], "  ", df[i,3], "    ", df[i,11], "   ", df[i,5], "  ", df[i,6], "  ", df[i,7], "  ", df[i,8], "  ", df[i,9], "  ", df[i,10], sep = "")}
     temp.file = append(temp.file, temp.new)
     
