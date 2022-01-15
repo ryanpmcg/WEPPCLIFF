@@ -248,7 +248,7 @@ check_args = function() {
   tf.patterns = paste("t", "f", collapse = "|")
   ed.patterns = paste("0", "1", "2", "3", "4", "5", "6", collapse = "|")
   sm.patterns = paste("1", "2", collapse = "|")
-  bf.patterns = paste("1", collapse = "|")
+  bf.patterns = paste("0", "1", collapse = "|")
   wi.patterns = paste("0", "1", collapse = "|")
   mp.patterns = paste("t", "f", 1:10000, collapse = "|")
   pi.patterns = paste("f", 1:1440, collapse = "|")
@@ -266,7 +266,7 @@ check_args = function() {
   if (grepl(cp, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-cp] must be specified as 't' (true) or 'f' (false).")}
   if (grepl(pi, pi.patterns, ignore.case = T) != T){stop("Invalid Argument: [-pi] must be specified as 'f' (false) or an integer up to 1440 (in minutes).")}
   if (grepl(sm, sm.patterns, ignore.case = T) != T){stop("Invalid Argument: [-sm] must be specified as '1' (continuous) or '2' (event).")}
-  if (grepl(bf, bf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-bf] must be specified as '0' (tp/ip - unsupported) or '1' (breakpoint).")}
+  if (grepl(bf, bf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-bf] must be specified as '0' (daily) or '1' (breakpoint).")}
   if (grepl(wi, wi.patterns, ignore.case = T) != T){stop("Invalid Argument: [-wi] must be specified as '0' (exclude) or '1' (include).")}
   if (grepl(ei, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-ei] must be specified as 't' (true) or 'f' (false).")}
   if (grepl(ipb, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-ipb] must be specified as 't' (true) or 'f' (false).")}
@@ -2232,8 +2232,8 @@ generate_header_data = function(data) {
   
   # Prepare fixed format, non-breakpoint format column headers.
   if (bf == 0){
-    h.4 = paste(lr, " Day Month Year  Prcp  Dur   TP     IP  T-Max  T-Min   Rad   W-Vel  W-Dir  T-Dew")
-    h.5 = paste(lr, "                 (mm)  (h)               (C)    (C)   (L/d)  (m/s)  (Deg)   (C)")}
+    h.4 = paste(lr, " Day Month Year  Prcp   Dur   TP     IP  T-Max  T-Min   Rad   W-Vel  W-Dir  T-Dew")
+    h.5 = paste(lr, "                 (mm)   (h) (0-1)  (>=1)  (C)    (C)   (L/d)  (m/s)  (Deg)   (C)")}
   
   # Prepare fixed format, breakpoint format column headers.
   if (bf == 1){
@@ -2290,7 +2290,54 @@ generate_export_data = function(data, dly.loc, pcp.loc) {
   increase_days = unname(sapply(pcp_gap_days, function(x) which(daily_df$YYYYMMDD %in% x)))
   rle_days = rle(increase_days)
   if (length(rle_days$values) > 0) {updated_bps[rle_days$values] = (mapply(function(x,y) updated_bps[x] + y, rle_days$values, rle_days$lengths))}
-
+  
+  # Compute non-breakpoint CLIGEN parameters.
+  pcpDF = aggregate(pcp_df$PRECIP, by = list(as.Date(pcp_df$DT_1)), function(x) sum(x, na.rm = T))      # daily precipitation
+  durDF = aggregate(pcp_df$DUR, by = list(as.Date(pcp_df$DT_1)), function(x) sum(x, na.rm = T))         # daily duration
+  intDF = aggregate(pcp_df$INT, by = list(as.Date(pcp_df$DT_1)), function(x) max(x, na.rm = T))         # daily max intensity
+  lenDF = aggregate(pcp_df$DUR, by = list(as.Date(pcp_df$DT_1)), function(x) length(x))                 # daily breakpoints
+  iavDF = pcpDF
+  ipkDF = pcpDF
+  tpkDF = pcpDF
+  tpkDF$x = 0
+  iavDF$x = pcpDF$x/(durDF$x/60)                                                                        # daily average intensity
+  ipkDF$x = intDF$x/iavDF$x                                                                             # daily ip ratio
+  
+  # Compute time-to-peak CLIGEN parameter.
+  begin = 0
+  for (i in 1:length(lenDF$x)) {
+    end = begin + lenDF$x[i]
+    range = (begin+1):end
+    durations = pcp_df$DUR[range]
+    intensities = pcp_df$INT[range]
+    maxLocation = which.max(intensities)
+    peakDuration = durations[maxLocation]
+    previousDurations = durations[0:(maxLocation-1)]
+    if (length(previousDurations) > 0) {peakTime = sum(previousDurations) + peakDuration/2}
+    if (length(previousDurations) == 0) {peakTime = peakDuration/2}
+    tpkDF[i,2] = peakTime/sum(durations)
+    begin = end
+  }
+  
+  # Merge results.
+  cligenPCPDF = data.frame(pcpDF[,1], pcpDF$x, durDF$x/60, tpkDF$x, ipkDF$x)
+  cligenPCPDF[,1] = format(as.Date(cligenPCPDF[,1]), "%Y%m%d")
+  names(cligenPCPDF) = c("YYYYMMDD", "AMOUNT", "DURATION", "TP", "IP")
+  dailyMergeDF = merge(daily_df, cligenPCPDF, by = "YYYYMMDD", all = T)
+  
+  # Zero non-precipitation rows.
+  zeros = is.na(dailyMergeDF$AMOUNT)
+  dailyMergeDF$AMOUNT[zeros] = 0
+  dailyMergeDF$DURATION[zeros] = 0
+  dailyMergeDF$TP[zeros] = 0
+  dailyMergeDF$IP[zeros] = 0
+  
+  # Handle errors.
+  dailyMergeDF$DURATION[dailyMergeDF$DURATION > 24] = 24
+  dailyMergeDF$TP[dailyMergeDF$TP > 1] = 1
+  dailyMergeDF$TP[dailyMergeDF$TP < 0] = 0
+  dailyMergeDF$IP[dailyMergeDF$IP < 1] = 1
+  
   # Format columns.
   nbrkpt = format(as.integer(daily_df$BPS), justify = "right", width = 3, nsmall = 0)
   adjbrkpt = format(as.integer(updated_bps), justify = "right", width = 3, nsmall = 0)
@@ -2300,9 +2347,14 @@ generate_export_data = function(data, dly.loc, pcp.loc) {
   wvel = format(round(as.numeric(daily_df$W_VEL), 1), justify = "right", width = 5, nsmall = 1)
   wdir = format(round(as.numeric(daily_df$W_DIR), 1), justify = "right", width = 5, nsmall = 1)
   dew = format(round(as.numeric(daily_df$DP_TEMP), 1), justify = "right", width = 5, nsmall = 1)
+  amount = format(round(as.numeric(dailyMergeDF$AMOUNT), 1), justify = "right", width = 5, nsmall = 1)
+  duration = format(round(as.numeric(dailyMergeDF$DURATION), 2), justify = "right", width = 5, nsmall = 2)
+  tp = format(round(as.numeric(dailyMergeDF$TP), 2), justify = "right", width = 5, nsmall = 2)
+  ip = format(round(as.numeric(dailyMergeDF$IP), 2), justify = "right", width = 5, nsmall = 2)
   
   # Combine and export.
-  df_out = cbind(dy, mn, yr, nbrkpt, tmax, tmin, rad, wvel, wdir, dew, adjbrkpt)
+  if (bf == 1) {df_out = cbind(dy, mn, yr, nbrkpt, tmax, tmin, rad, wvel, wdir, dew, adjbrkpt)}
+  if (bf == 0) {df_out = cbind(dy, mn, yr, amount, duration, tp, ip, tmax, tmin, rad, wvel, wdir, dew)}
   export = list(df_out, daily_df)
   return(export)}
 
@@ -2368,42 +2420,48 @@ create_cli_file = function(data, header, export) {
   time.next.status = F
   zero.out = format(round(0, 2), justify = "right", width = 6, nsmall = 2)
   for (i in daily_rows){
-    temp.new = paste(lr, "  ", df[i,1], "   ", df[i,2], "  ", df[i,3], "    ", df[i,11], "   ", df[i,5], "  ", df[i,6], "  ", df[i,7], "  ", df[i,8], "  ", df[i,9], "  ", df[i,10], sep = "")
+    
+    # Handle breakpoint and non-breakpoint formats.
+    if (bf == 0) {temp.new = paste(lr, "  ", df[i,1], "   ", df[i,2], "  ", df[i,3], "  ", df[i,4], " ", df[i,5], " ", df[i,6], " ", df[i,7], " ", df[i,8], "  ", df[i,9], "  ", df[i,10], "  ", df[i,11], "  ", df[i,12], "  ", df[i,13], sep = "")}
+    if (bf == 1) {temp.new = paste(lr, "  ", df[i,1], "   ", df[i,2], "  ", df[i,3], "    ", df[i,11], "   ", df[i,5], "  ", df[i,6], "  ", df[i,7], "  ", df[i,8], "  ", df[i,9], "  ", df[i,10], sep = "")}
     temp.file = append(temp.file, temp.new)
+    
+    # Write breakpoint format output.
+    if (bf == 1) {
 
-    # Write the first breakpoint of the day.
-    if (daily_df$BPS[i] > 0){
-      bp.time = as.numeric(pcp_df$HOUR[current.pcp]) + as.numeric(pcp_df$MIN[current.pcp])/60 - as.numeric(pcp_df$DUR[current.pcp])/60
-      time.out = format(round(bp.time, 3), justify = "right", width = 6, nsmall = 3)
-      temp.new = paste(lr, time.out, " ", zero.out, sep = "")
-      temp.file = append(temp.file, temp.new)
-      bp.depth = 0
-      new.day = T
-
-      # Write precipitation lines (precip and non-precip breaks).
-      last.pcp = current.pcp + daily_df$BPS[i] - 2
-      for (j in current.pcp:last.pcp){
-        
-        # Write non-precip breaks.
-        if (new.day == F & pcp_df$BTW[j] > 0){
-          bp.time = as.numeric(pcp_df$HOUR[j]) + as.numeric(pcp_df$MIN[j])/60 - as.numeric(pcp_df$DUR[j])/60
+      # Write the first breakpoint of the day.
+      if (daily_df$BPS[i] > 0){
+        bp.time = as.numeric(pcp_df$HOUR[current.pcp]) + as.numeric(pcp_df$MIN[current.pcp])/60 - as.numeric(pcp_df$DUR[current.pcp])/60
+        time.out = format(round(bp.time, 3), justify = "right", width = 6, nsmall = 3)
+        temp.new = paste(lr, time.out, " ", zero.out, sep = "")
+        temp.file = append(temp.file, temp.new)
+        bp.depth = 0
+        new.day = T
+  
+        # Write precipitation lines (precip and non-precip breaks).
+        last.pcp = current.pcp + daily_df$BPS[i] - 2
+        for (j in current.pcp:last.pcp){
+          
+          # Write non-precip breaks.
+          if (new.day == F & pcp_df$BTW[j] > 0){
+            bp.time = as.numeric(pcp_df$HOUR[j]) + as.numeric(pcp_df$MIN[j])/60 - as.numeric(pcp_df$DUR[j])/60
+            time.out = format(round(bp.time, 3), justify = "right", width = 6, nsmall = 3)
+            depth.out = format(round(bp.depth, 2), justify = "right", width = 6, nsmall = 2)
+            temp.new = paste(lr, time.out, " ", depth.out, sep = "")
+            temp.file = append(temp.file, temp.new)}
+          
+          # Write precip breaks.
+          bp.time = as.numeric(pcp_df$HOUR[j]) + as.numeric(pcp_df$MIN[j])/60
+          bp.depth = as.numeric(pcp_df$PRECIP[j]) + bp.depth
           time.out = format(round(bp.time, 3), justify = "right", width = 6, nsmall = 3)
           depth.out = format(round(bp.depth, 2), justify = "right", width = 6, nsmall = 2)
           temp.new = paste(lr, time.out, " ", depth.out, sep = "")
-          temp.file = append(temp.file, temp.new)}
-        
-        # Write precip breaks.
-        bp.time = as.numeric(pcp_df$HOUR[j]) + as.numeric(pcp_df$MIN[j])/60
-        bp.depth = as.numeric(pcp_df$PRECIP[j]) + bp.depth
-        time.out = format(round(bp.time, 3), justify = "right", width = 6, nsmall = 3)
-        depth.out = format(round(bp.depth, 2), justify = "right", width = 6, nsmall = 2)
-        temp.new = paste(lr, time.out, " ", depth.out, sep = "")
-        temp.file = append(temp.file, temp.new)
-        
-        # Stop if the end of the dataframe is encountered.
-        if (j == last.pcp){need.break = F; break()}
-        if ((j + 1) > nrow(pcp_df)){need.break = F; break()}
-        new.day = F}}
+          temp.file = append(temp.file, temp.new)
+          
+          # Stop if the end of the dataframe is encountered.
+          if (j == last.pcp){need.break = F; break()}
+          if ((j + 1) > nrow(pcp_df)){need.break = F; break()}
+          new.day = F}}}
     
     # Setup for the next iteration.
     current.pcp = last.pcp + 1}
