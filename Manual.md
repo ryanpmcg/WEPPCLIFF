@@ -104,8 +104,8 @@ dtf3|datetime format 3|dtf1|an R datetime format string|the datetime (or date) f
 -----|-----|-----|-----|-----
 cv|CLIGEN version|0.0|F / 0.0 / 4.3 / 5.3|when performing standalone precipitation analyses, use 'F' (quality checking, gap filling, and .cli file creation are not supported in this mode); when creating .cli files from precipitation and other climate information, generally this should be 0.0 because observed data is not from CLIGEN, but the option exists to change this for some WEPP applications only the most common versions (4.3 and 5.3) are supported now
 sm|simulation mode|1|1 / 2|determines whether WEPPCLIFF should create a continuous CLI file (1) or an event-wise CLI file (2); this can be for a single storm or a series of storms, but this mode has not yet been validated with WEPP
-bf|breakpoint format|1|1|determines whether WEPPCLIFF output should be written identical to CLIGEN output (0) or in breakpoint format (1); the (0) option is currently unsupported due to the need to verify identical tp and ip calculations; it is possible this will be supported in the future
-wi|wind information|1|0 / 1|determines whether wind information should be used (1) in the CLI file or ignored (0)
+bf|breakpoint format|1|0 / 1|determines whether WEPPCLIFF output should be written identical to 'ip-tp' format, daily CLIGEN output (0) or in breakpoint format (1); daily ip and tp calculations differ from similar variables in WEPPCLIFF dataframes (i.e., these are not interchangeable)
+wi|wind information|1|0 / 1|determines whether wind information should be used (1) in the CLI file or ignored (0); this is only relevant for WEPP and has no impact on the WEPPCLIFF program execution
 
 ## OPTIMIZATION ARGUMENTS:
 **FLAG**|**NAME**|**DEFAULT**|**OPTIONS**|**DESCRIPTION**
