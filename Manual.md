@@ -46,6 +46,9 @@ l|library directory|./LIBRARY|a directory|the location where all WEPPCLIFF depen
 f|filename|NONE|.txt, .csv, or .tsv file|the input file if there is only one; leaving this blank will cause the program to try and process all files in the input directory; accepts tab or comma separated entries (must be .tsv or .csv, respectively) or you can specify a delimiter for .txt files with -delim
 fn|output filename|station|a string|the name which will be used as default for all files written during WEPPCLIFF processing; specifying 'station' will search the input data for a station name to be assigned to the outputs (especially useful for parallel processing)
 delim|file delimiter|a single space|a string|specifies a delimiter to use when the input file is of type .txt
+fsp|file search pattern|NA|a string|specifies a pattern for grep-based searching and subsetting of input files
+isc|ignore search case|F|T / F|specifies whether the case (capitalization) of the search pattern should be ignored
+rs|recursive search|F|T / F|specifies whether the input file search (with or without the search pattern) should be recursive (i.e., search child directories)
 
 ## FUNCTIONALITY ARGUMENTS:
 **FLAG**|**NAME**|**DEFAULT**|**OPTIONS**|**DESCRIPTION**
