@@ -212,6 +212,9 @@ assign_empty_args = function() {
   if (length(qi) == 0){assign("qi", "f", envir = .GlobalEnv)} # Def: do not cut corners on imputation
   if (length(iv) == 0){assign("iv", "f", envir = .GlobalEnv)} # Def: do not print imputation progress
   if (length(tz) == 0){assign("tz", "GMT", envir = .GlobalEnv)} # Def: use GMT for the time zone
+  if (length(rs) == 0){assign("rs", "f", envir = .GlobalEnv)} # Def: do not use recursive search
+  if (length(fsp) == 0){assign("fsp", NA, envir = .GlobalEnv)} # Def: no search pattern
+  if (length(isc) == 0){assign("isc", "f", envir = .GlobalEnv)} # Def: does not ignore search case
   if (length(alt) == 0){assign("alt", "f", envir = .GlobalEnv)} # Def: alternative data provided
   if (length(pmd) == 0){assign("pmd", "f", envir = .GlobalEnv)} # Def: do not preserve missingness
   if (length(sid) == 0){assign("sid", 1, envir = .GlobalEnv)} # Def: use first storm in list
@@ -269,6 +272,8 @@ check_args = function() {
   if (grepl(wi, wi.patterns, ignore.case = T) != T){stop("Invalid Argument: [-wi] must be specified as '0' (exclude) or '1' (include).")}
   if (grepl(ei, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-ei] must be specified as 't' (true) or 'f' (false).")}
   if (grepl(cv, cv.patterns, ignore.case = T) != T){stop("Invalid Argument: [-cv] must be specified as 'f' (false) or one of the supported CLIGEN version control numbers (0.0, 4.3, or 5.3).")}
+  if (grepl(rs, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-rs] must be specified as 't' (true) or 'f' (false).")}
+  if (grepl(isc, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-isc] must be specified as 't' (true) or 'f' (false).")}
   if (grepl(ipb, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-ipb] must be specified as 't' (true) or 'f' (false).")}
   if (grepl(rtb, rtb.patterns, ignore.case = T) != T){stop("Invalid Argument: [-rtb] must be specified as 'm' (month), 'd' (day), 'h' (hour), or 'f' (false).")}
   if (grepl(alt, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-alt] must be specified as 't' (true) or 'f' (false).")}
@@ -340,8 +345,12 @@ load_input_directory = function() {
     cat("Parsing input files... ")
     
     # Get list of files.
-    files = dir(d, full.names = T)
-    
+    if (toupper(rs) == "T") {rs = T}
+    if (toupper(rs) == "F") {rs = F}
+    if (toupper(isc) == "T") {isc = T}
+    if (toupper(isc) == "F") {isc = F}
+    files = dir(d, full.names = T, pattern = fsp, recursive = rs, ignore.case = isc)
+
     # Parse file types.
     txt = grep(".txt", files)
     tsv = grep(".tsv", files)
@@ -2683,7 +2692,7 @@ x = 1:3                                   # Datetime groups to quality check.
 args = commandArgs(trailingOnly = T)      # User specified arguments (stdin).
 
 flags = c("fr", "la",
-          "d", "o", "e", "p", "l", "f", "fn", "delim",
+          "d", "o", "e", "p", "l", "f", "fn", "delim", "fsp", "isc", "rs",
           "u", "qc", "id", "pd", "ed", "alt", "pmd",
           "cp", "pi", "ei", "ee",
           "sid", "tth", "dth",
@@ -2695,7 +2704,7 @@ flags = c("fr", "la",
           "prof", "pint", "mepr", "gcpr", "lnpr", "warn", "verb")
 
 flagnames = c("First Run", "License Agreement",
-              "Input Directory", "Output Directory", "Export Directory", "Plot Directory", "Library Directory", "Input Filename", "Output Filename", "File Delimiter",
+              "Input Directory", "Output Directory", "Export Directory", "Plot Directory", "Library Directory", "Input Filename", "Output Filename", "File Delimiter", "File Search Pattern", "Ignore Search Case", "Recursive Search",
               "Unit Conversion", "Quality Check", "Impute Missing Data", "Plot Data", "Export Data", "Use Alternative Data", "Preserve Missing Data",
               "Cumulative Precipitation", "Precipitation Interval", "Calculate Erosion Indices", "Energy Equation(s)",
               "Storm Identifier", "Storm Separation Time Threshhold", "Storm Separation Depth Threshhold",
@@ -2720,15 +2729,15 @@ flagtypes = c("INSTALLATION ARGUMENTS",
 
 flagcount = c(1,
               3,
-              11,
-              17,
-              22,
+              14,
+              20,
               25,
-              31,
-              35,
-              43,
-              47,
-              48)
+              28,
+              34,
+              38,
+              46,
+              50,
+              51)
 
 var.e.list = c("lr", "args", flags, "u.loc", "ee.loc", "home.dir", "lib.dir", "package.list", "par.pack.list")
 package.list = c("backports", "crayon", "vctrs", "tzdb", "vroom", "cli", "readr", "rlist", "iterators", "foreach", "doParallel", "EnvStats", "mice", "RcppParallel", "withr", "ggplot2", "profvis", "data.table", "jsonlite")
