@@ -3,11 +3,11 @@
 ## METADATA:
 
 	Author:		Ryan P. McGehee
-	Modified:	3 March 2022
+	Modified:	4 March 2022
 
 ## PURPOSE:
 
-	Provide a manual of WEPPCLIFF syntax, which is easily accessible.
+	Provide a manual of WEPPCLIFF (v1.6) syntax, which is easily accessible.
 
 ## NOTES:
 
