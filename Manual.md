@@ -16,11 +16,15 @@
 	necessary. Most commands, especially core functionality, will not change
 	much over time.
 	
-	As of WEPPCLIFF Version 1.4 automated gap filling and quality checking
-	routines were determined to be satisfactory for publication, but they
-	are not perfect. In the near future, these routines will be evaluated
-	and published in scientific literature to provide a more complete
-	understanding of their capabilities and limitations.
+	As of WEPPCLIFF Version 1.6 automated gap filling and quality checking
+	routines were determined to be satisfactory for continued use, but they
+	are not perfect. These routines were broadly evaluated and published in
+	"An Updated Isoerodent Map of the Conterminous United States" (McGehee 
+	et al. 2022). They found the gap filling model added substantial value
+	to stations with gaps, but the filled storm data tended to be less 
+	erosive than the original storms by about 10% on average. This will
+	likely be addressed in a future update. But users should be aware of
+	the limitation in the meantime.
 
 	KEEP THESE NOTES IN MIND FOR UNDERSTANDING THE CURRENT CAPABILITIES OF
 	WEPPCLIFF AS WELL AS THOSE TO BE INCLUDED IN FUTURE RELEASES.
