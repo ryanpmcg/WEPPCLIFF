@@ -3,7 +3,7 @@
 ## METADATA:
 
 	Author:		Ryan P. McGehee
-	Modified:	31 August 2021
+	Modified:	3 March 2022
 
 ## PURPOSE:
 
@@ -50,7 +50,7 @@ u|units|M|M <vars> / E <vars>|the units of the input file (Metric or English) fo
 qc|quality control|F|T / F|determines whether or not to perform quality control routines for the input data; the flags -qcop, -qcth, and -qcdf control the methodology
 id|impute missing data|F|T / F|determines whether or not to engage a multiple imputation model to fill missing data; the flags -im, -io, -qi, and -iv control the methodology
 pd|plot data|F|T / F|determines whether or not to create graphical output for both inputs to WEPPCLIFF and resulting output data
-ed|export data|0|0 / 1 / 2 / 3 / 4 / 5|determines whether or not to generate binary or human readible output of internal calculations; (0) no files written; (1) a single .rds binary file written (this is the only option to export all internal calculations); (2) multiple .csv text files written (for internal dataframe structures only); (3-5) .csv text files written for only precipitation, daily, or storm timeseries dataframes, respectively
+ed|export data|0|0 / 1 / 2 / 3 / 4 / 5 / 6|determines whether or not to generate binary or human readible output of internal calculations; (0) no files written; (1) all supported export files written; (2) a single .rds binary file written (1 and 2 are the only options that export all internal calculations); (3-6) .csv text files written for only precipitation, daily, storm, or breakpoint timeseries dataframes, respectively
 alt|alternative data|F|T / F|specifies whether or not to use alternative data to calculate minimum, maximum, and dew point temperatures; this requires the variables AIR\_TEMP and REL\_HUM
 pmd|preserve missing data|F|T / F|specifies whether or not to maintain NA values throughout execution; when true, this converts all non-numeric inputs and calculations and the WEPPCLIFF missing data value (-99999) values to NA; internal calculations and plots are affected according to various conventions throughout execution
 
@@ -60,8 +60,7 @@ pmd|preserve missing data|F|T / F|specifies whether or not to maintain NA values
 cp|cumulative precipitation|F|T / F|specifies whether or not input precipitation data is cumulative (T) or incremental (F)
 pi|precipitation interval|F|F / positive integer|specifies a precipitation time interval in minutes to use; (F) indicates that the data provided are already in breakpoint format (i.e. the interval is exactly the difference between measured values
 ei|erosion index|F|T / F|specifies whether or not erosion indices should be calculated
-ee|energy equation|R2|ALL / ARS / MM / BF / AH282 / AH537 / AH703 / R2 / USER <exp>|specifies the energy equation to be used to calculate erosion indices; options include: Brown-Foster (BF), McGregor-Mutchler (MM), any of the three Agricultural Handbooks (282/537/703), the RUSLE2 version of the BF equation (R2) or a user specified equation (which must be followed by an acceptable Base R expression in terms of intensity as 'i'); an option for all equations (ALL) including the USER equation is available (USER is NULL if unspecified) and (ARS) uses all equations except for the USER equation.
-eb|export breakpoints|F|T / F|specifies whether or not to save precipitation breakpoints as a .csv file in the data export directory
+ee|energy equation|R2|ALL / ARS / MM / BF / AH282 / AH537 / AH703 / R2 / USER <exp>|specifies the energy equation to be used to calculate erosion indices; options include: Brown-Foster (BF), McGregor-Mutchler (MM), any of the three Agricultural Handbooks (282/537/703), the RUSLE2 version of the BF equation (R2) or a user specified equation (which must be followed by an acceptable Base R expression in terms of intensity as 'i'); an option for all equations (ALL) including the USER equation is available (USER is NULL if unspecified) and (ARS) uses all equations except for the USER equation
 
 ## STORM CONTROL ARGUMENTS:
 **FLAG**|**NAME**|**DEFAULT**|**OPTIONS**|**DESCRIPTION**
@@ -103,7 +102,7 @@ dtf3|datetime format 3|dtf1|an R datetime format string|the datetime (or date) f
 ## CLIGEN FORMAT CONTROL ARGUMENTS:
 **FLAG**|**NAME**|**DEFAULT**|**OPTIONS**|**DESCRIPTION**
 -----|-----|-----|-----|-----
-cv|CLIGEN version|0.0|CLIGEN version|generally this should be 0.0 because observed data is not from CLIGEN, but the option exists to change this for some WEPP applications
+cv|CLIGEN version|0.0|F / 0.0 / 4.3 / 5.3|when performing standalone precipitation analyses, use 'F' (quality checking, gap filling, and .cli file creation are not supported in this mode); when creating .cli files from precipitation and other climate information, generally this should be 0.0 because observed data is not from CLIGEN, but the option exists to change this for some WEPP applications only the most common versions (4.3 and 5.3) are supported now
 sm|simulation mode|1|1 / 2|determines whether WEPPCLIFF should create a continuous CLI file (1) or an event-wise CLI file (2); this can be for a single storm or a series of storms, but this mode has not yet been validated with WEPP
 bf|breakpoint format|1|1|determines whether WEPPCLIFF output should be written identical to CLIGEN output (0) or in breakpoint format (1); the (0) option is currently unsupported due to the need to verify identical tp and ip calculations; it is possible this will be supported in the future
 wi|wind information|1|0 / 1|determines whether wind information should be used (1) in the CLI file or ignored (0)
