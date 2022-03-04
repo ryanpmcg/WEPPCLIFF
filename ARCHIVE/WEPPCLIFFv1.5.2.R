@@ -2,9 +2,9 @@
 ############################## PROGRAM METADATA #############################
 #############################################################################
 
-#  Version: 1.6
+#  Version: 1.5.2
 #  Last Updated by: Ryan P. McGehee
-#  Last Updated on: 3 March 2022
+#  Last Updated on: 5 April 2020
 #  Purpose: This program was first designed to create an appropriate input
 #           climate file (.cli) for a WEPP model run. However, the program
 #           has evolved into a much more advanced and capable tool. See the
@@ -39,8 +39,8 @@ ________________________________________________________________________________
 # A function to print a license agreement.
 print_license_agreement = function() {
   LICENSE = {"
-  WEPP Climate File Formatter (WEPPCLIFF) Version 1.6
-  Copyright (c) 2022 Ryan P. McGehee
+  WEPP Climate File Formatter (WEPPCLIFF) Version 1.5.2
+  Copyright (c) 2021 Ryan P. McGehee
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -199,6 +199,7 @@ assign_empty_args = function() {
   if (length(id) == 0){assign("id", "f", envir = .GlobalEnv)} # Def: do not fill data
   if (length(pd) == 0){assign("pd", "f", envir = .GlobalEnv)} # Def: do not plot data
   if (length(ed) == 0){assign("ed", 0, envir = .GlobalEnv)} # Def: do not export data
+  if (length(eb) == 0){assign("eb", "f", envir = .GlobalEnv)} # Def: do not export breakpoints
   if (length(cp) == 0){assign("cp", "f", envir = .GlobalEnv)} # Def: non-cumulative precipitation data
   if (length(pi) == 0){assign("pi", "f", envir = .GlobalEnv)} # Def: breakpoint format assumed
   if (length(cv) == 0){assign("cv", "0.0", envir = .GlobalEnv)} # Def: CLIGEN Version Unspecified
@@ -245,13 +246,12 @@ check_args = function() {
   # Create patterns for grep searching.
   u.patterns = paste("m", "e", collapse = "|")
   tf.patterns = paste("t", "f", collapse = "|")
-  ed.patterns = paste(0:6, collapse = "|")
+  ed.patterns = paste("0", "1", "2", "3", "4", "5", "6", collapse = "|")
   sm.patterns = paste("1", "2", collapse = "|")
   bf.patterns = paste("0", "1", collapse = "|")
   wi.patterns = paste("0", "1", collapse = "|")
   mp.patterns = paste("t", "f", 1:10000, collapse = "|")
   pi.patterns = paste("f", 1:1440, collapse = "|")
-  cv.patterns = paste("f", "0.0", "4.3", "5.3", collapse = "|")
   rtb.patterns = paste("m", "d", "h", "f", collapse = "|")
   
   # Perform grep searching.
@@ -261,14 +261,14 @@ check_args = function() {
   if (grepl(qc, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-qc] must be specified as 't' (true) or 'f' (false).")}
   if (grepl(id, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-id] must be specified as 't' (true) or 'f' (false).")}
   if (grepl(pd, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-pd] must be specified as 't' (true) or 'f' (false).")}
-  if (grepl(ed, ed.patterns, ignore.case = T) != T){stop("Invalid Argument: [-ed] must be specified as '0' (off), '1' (all), '2' (rds), '3-6' (precip, daily, storm or breakpoint csv).")}
+  if (grepl(ed, ed.patterns, ignore.case = T) != T){stop("Invalid Argument: [-ed] must be specified as '0' (off), '1' (rds), '2' (json), '3-5' (precip, daily, or storm csv), or '6' (all).")}
+  if (grepl(eb, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-eb] must be specified as 't' (true) or 'f' (false).")}
   if (grepl(cp, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-cp] must be specified as 't' (true) or 'f' (false).")}
   if (grepl(pi, pi.patterns, ignore.case = T) != T){stop("Invalid Argument: [-pi] must be specified as 'f' (false) or an integer up to 1440 (in minutes).")}
   if (grepl(sm, sm.patterns, ignore.case = T) != T){stop("Invalid Argument: [-sm] must be specified as '1' (continuous) or '2' (event).")}
   if (grepl(bf, bf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-bf] must be specified as '0' (daily) or '1' (breakpoint).")}
   if (grepl(wi, wi.patterns, ignore.case = T) != T){stop("Invalid Argument: [-wi] must be specified as '0' (exclude) or '1' (include).")}
   if (grepl(ei, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-ei] must be specified as 't' (true) or 'f' (false).")}
-  if (grepl(cv, cv.patterns, ignore.case = T) != T){stop("Invalid Argument: [-cv] must be specified as 'f' (false) or one of the supported CLIGEN version control numbers (0.0, 4.3, or 5.3).")}
   if (grepl(ipb, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-ipb] must be specified as 't' (true) or 'f' (false).")}
   if (grepl(rtb, rtb.patterns, ignore.case = T) != T){stop("Invalid Argument: [-rtb] must be specified as 'm' (month), 'd' (day), 'h' (hour), or 'f' (false).")}
   if (grepl(alt, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-alt] must be specified as 't' (true) or 'f' (false).")}
@@ -325,8 +325,7 @@ check_input_format = function(file) {
   # Check input variables.
   oldNames = colnames(file)
   vars = c("DT_1", "PRECIP", "DT_3", "MAX_TEMP", "MIN_TEMP", "SO_RAD", "W_VEL", "W_DIR", "DP_TEMP")
-  if (toupper(alt) == "T") {vars = c("DT_1", "PRECIP", "DT_2", "AIR_TEMP", "REL_HUM", "DT_3", "SO_RAD", "W_VEL", "W_DIR")}
-  if (toupper(cv) == "F") {vars = c("DT_1", "PRECIP")}
+  if(toupper(alt) == "T"){vars = c("DT_1", "PRECIP", "DT_2", "AIR_TEMP", "REL_HUM", "DT_3", "SO_RAD", "W_VEL", "W_DIR")}
   present = which(vars %in% oldNames)
   missing = vars[-present]
   if(length(missing) > 0){cat("Some expected variables are missing:", missing, "", lr, lr); stop()}
@@ -845,29 +844,24 @@ trim_data = function(data, precip.ts.df, alt.ts.df, d.ts.df, event.list) {
   data = break_storms(data, precip.ts.df, event.list)
   
   # Use all variables for time bounds.
-  if (toupper(alt) == "T" & toupper(ipb) == "F" & toupper(cv) != "F"){
+  if (toupper(alt) == "T" & toupper(ipb) == "F"){
     maxs = c(max(data[[precip.ts.df]]$DT_1, na.rm = T), max(data[[alt.ts.df]]$DT_2, na.rm = T), max(data[[d.ts.df]]$DT_3, na.rm = T))
     mins = c(min(data[[precip.ts.df]]$DT_1, na.rm = T), min(data[[alt.ts.df]]$DT_2, na.rm = T), min(data[[d.ts.df]]$DT_3, na.rm = T))}
   
   # Exclude only alternative variables for time
-  if (toupper(alt) == "F" & toupper(ipb) == "F" & toupper(cv) != "F"){
+  if (toupper(alt) == "F" & toupper(ipb) == "F"){
     maxs = c(max(data[[precip.ts.df]]$DT_1, na.rm = T), max(data[[d.ts.df]]$DT_3, na.rm = T))
     mins = c(min(data[[precip.ts.df]]$DT_1, na.rm = T), min(data[[d.ts.df]]$DT_3, na.rm = T))}
   
   # Exclude only precipitation variables for time bounds.
-  if (toupper(alt) == "T" & toupper(ipb) == "T" & toupper(cv) != "F"){
+  if (toupper(alt) == "T" & toupper(ipb) == "T"){
     maxs = c(max(data[[alt.ts.df]]$DT_2, na.rm = T), max(data[[d.ts.df]]$DT_3, na.rm = T))
     mins = c(min(data[[alt.ts.df]]$DT_2, na.rm = T), min(data[[d.ts.df]]$DT_3, na.rm = T))}
   
   # Use only daily variables for time bounds.
-  if (toupper(alt) == "F" & toupper(ipb) == "T" & toupper(cv) != "F"){
+  if (toupper(alt) == "F" & toupper(ipb) == "T"){
     maxs = c(max(data[[d.ts.df]]$DT_3, na.rm = T))
-    mins = c(min(data[[d.ts.df]]$DT_3, na.rm = T))}  
-  
-  # Use only precipitation variables for time bounds.
-  if (toupper(cv) == "F"){
-    maxs = c(max(data[[precip.ts.df]]$DT_1, na.rm = T))
-    mins = c(min(data[[precip.ts.df]]$DT_1, na.rm = T))}
+    mins = c(min(data[[d.ts.df]]$DT_3, na.rm = T))}
   
   # Record Bounds
   start = max(mins, na.rm = T)
@@ -876,7 +870,6 @@ trim_data = function(data, precip.ts.df, alt.ts.df, d.ts.df, event.list) {
   # Trim data to exact bounds based on user inputs.
   if (toupper(alt) == "T") {groups = 5:7}
   if (toupper(alt) == "F") {groups = c(5, 7)}
-  if (toupper(cv) == "F") {groups = 5}
   bounds = time_bounds(start, end)
   dt_list = c("DT_1", "DT_2", "DT_3")
   
@@ -1403,7 +1396,7 @@ process_precip_data = function(data, pcp.in, dly.ts, mly.ts, yly.ts, mly.mn) {
   d.precip = df_find_replace(d.precip, 2:ncol(d.precip), find = T, null = T, nan = T, na = T, inf = T, vals = -99999, replace = NA)
   
   # Merge with daily time series data.
-  if (toupper(cv) != "F") {d.precip = merge(data[[dly.ts]], d.precip, by = "YYYYMMDD", all.x = T)}
+  d.precip = merge(data[[dly.ts]], d.precip, by = "YYYYMMDD", all.x = T)
   data[[dly.ts]] = d.precip
 
   # Find monthly precipitation.
@@ -1418,7 +1411,7 @@ process_precip_data = function(data, pcp.in, dly.ts, mly.ts, yly.ts, mly.mn) {
   m.ts = df_find_replace(m.ts, 2:ncol(m.ts), find = T, null = T, nan = T, na = T, inf = T, vals = -99999, replace = NA)
   
   # Merge with monthly time series data.
-  if (toupper(cv) != "F") {m.ts = merge(data[[mly.ts]], m.ts, by = "YYYYMM", all.x = T)}
+  m.ts = merge(data[[mly.ts]], m.ts, by = "YYYYMM", all.x = T)
   data[[mly.ts]] = m.ts
   
   # Find annual precipitation.
@@ -1433,7 +1426,7 @@ process_precip_data = function(data, pcp.in, dly.ts, mly.ts, yly.ts, mly.mn) {
   an.ts = df_find_replace(an.ts, 2:ncol(an.ts), find = T, null = T, nan = T, na = T, inf = T, vals = -99999, replace = NA)
   
   # Merge with annual time series data.
-  if (toupper(cv) != "F") {an.ts = merge(data[[yly.ts]], an.ts, by = "YYYY", all.x = T)}
+  an.ts = merge(data[[yly.ts]], an.ts, by = "YYYY", all.x = T)
   data[[yly.ts]] = an.ts
   
   # Find monthly average precipitation.
@@ -1451,7 +1444,7 @@ process_precip_data = function(data, pcp.in, dly.ts, mly.ts, yly.ts, mly.mn) {
   m.mn = convert_df_type(m.mn, 1:ncol(m.mn), "n")
   
   # Merge with monthly time series data.
-  if (toupper(cv) != "F") {m.mn = merge(data[[mly.mn]], m.mn, by = "MM", all.x = T)}
+  m.mn = merge(data[[mly.mn]], m.mn, by = "MM", all.x = T)
   data[[mly.mn]] = m.mn
   
   return(data)}
@@ -2155,11 +2148,12 @@ export_data = function(data) {
   
   # Perform export.
   if (ed == 6) {eb = "T"}
-  if (ed %in% c(1,2)) {saveRDS(data, paste(fn, ".rds", sep = ""))}
-  if (ed %in% c(1,3)) {export_to_csv(data, 5, 15, "PRECIP")}
-  if (ed %in% c(1,4)) {export_to_csv(data, 10, 18, "DAILY")}
-  if (ed %in% c(1,5)) {export_to_csv(data, 9, 17, "STORM")}
-  if (ed %in% c(1,6)) {export_pcp_bps(data, 5, 15, "BPS")}
+  if (ed %in% c(1,6)) {saveRDS(data, paste(fn, ".rds", sep = ""))}
+  #if (ed %in% c(2,6)) {list.save(data, paste(fn, ".json", sep = ""))}
+  if (ed %in% c(3,6)) {export_to_csv(data, 5, 15, "PRECIP")}
+  if (ed %in% c(4,6)) {export_to_csv(data, 10, 18, "DAILY")}
+  if (ed %in% c(5,6)) {export_to_csv(data, 9, 17, "STORM")}
+  if (toupper(eb) == "T") {export_pcp_bps(data, 5, 15, "BPS")}
 
   setwd(home.dir)}
 
@@ -2528,7 +2522,6 @@ core_workflow = function(file) {
   file = list(file)
   assign_final_args()
   if (toupper(alt) == "F") {x = c(1, 3)}
-  if (toupper(cv) == "F") {x = 1; id = "f"; qc = "f"}
   data = store_data(file)
   data = convert_data(data)
   data = remove_missing_datetime_rows(data)
@@ -2539,19 +2532,18 @@ core_workflow = function(file) {
   if (toupper(qc) == "T"){data = quality_check_inputs(data)}
   data = trim_data(data, 5, 6, 7, 8)
   if (toupper(ei) == "T") {data = calculate_erosion_indices(data, 8, 9)}
-  if (toupper(cv) != "F") {data = process_daily_data(data, 7, 6, 10, 11, 12, 13)}
+  data = process_daily_data(data, 7, 6, 10, 11, 12, 13)
   data = process_precip_data(data, 5, 10, 11, 12, 13)
   if (toupper(qc) == "T"){data = quality_check_outputs(data, 10)}
   data = annual_summary(data, 12, 14)
   data = preserve_missing_data(data, 13)
   if (toupper(id) == "T") {data = fill_workflow(data)}
   if (toupper(pd) == "T") {try(graph_data(data), silent = T)}
-  if (ed > 0) {export_data(data)}
-  if (toupper(cv) != "F") {
-    header = generate_header_data(data)
-    if (toupper(id) == "F") {export = generate_export_data(data, 10, 5)}
-    if (toupper(id) == "T") {export = generate_export_data(data, 18, 15)}
-    create_cli_file(data, header, export)}}
+  if (toupper(eb) == "T" | ed > 0) {export_data(data)}
+  header = generate_header_data(data)
+  if (toupper(id) == "F") {export = generate_export_data(data, 10, 5)}
+  if (toupper(id) == "T") {export = generate_export_data(data, 18, 15)}
+  create_cli_file(data, header, export)}
 
 
 # A function to execute the WEPPCLIFF workflow in parallel.
@@ -2685,7 +2677,7 @@ args = commandArgs(trailingOnly = T)      # User specified arguments (stdin).
 flags = c("fr", "la",
           "d", "o", "e", "p", "l", "f", "fn", "delim",
           "u", "qc", "id", "pd", "ed", "alt", "pmd",
-          "cp", "pi", "ei", "ee",
+          "cp", "pi", "ei", "ee", "eb",
           "sid", "tth", "dth",
           "qcop", "chkth", "spkth", "strth", "stkth", "rp",
           "im", "io", "qi", "iv",
@@ -2697,7 +2689,7 @@ flags = c("fr", "la",
 flagnames = c("First Run", "License Agreement",
               "Input Directory", "Output Directory", "Export Directory", "Plot Directory", "Library Directory", "Input Filename", "Output Filename", "File Delimiter",
               "Unit Conversion", "Quality Check", "Impute Missing Data", "Plot Data", "Export Data", "Use Alternative Data", "Preserve Missing Data",
-              "Cumulative Precipitation", "Precipitation Interval", "Calculate Erosion Indices", "Energy Equation(s)",
+              "Cumulative Precipitation", "Precipitation Interval", "Calculate Erosion Indices", "Energy Equation(s)", "Export Breakpoints",
               "Storm Identifier", "Storm Separation Time Threshhold", "Storm Separation Depth Threshhold",
               "Quality Checking Option", "Checking Threshold", "Spiking Threshold", "Streaking Threshold", "Sticking Threshold", "Return Period",
               "Impute Method", "Iteration Override", "Quick Impute", "Impute Verbosity",
@@ -2721,14 +2713,14 @@ flagtypes = c("INSTALLATION ARGUMENTS",
 flagcount = c(1,
               3,
               11,
-              17,
-              22,
-              25,
-              31,
-              35,
-              43,
-              47,
-              48)
+              18,
+              23,
+              26,
+              32,
+              36,
+              44,
+              48,
+              49)
 
 var.e.list = c("lr", "args", flags, "u.loc", "ee.loc", "home.dir", "lib.dir", "package.list", "par.pack.list")
 package.list = c("backports", "crayon", "vctrs", "tzdb", "vroom", "cli", "readr", "rlist", "iterators", "foreach", "doParallel", "EnvStats", "mice", "RcppParallel", "withr", "ggplot2", "profvis", "data.table", "jsonlite")
