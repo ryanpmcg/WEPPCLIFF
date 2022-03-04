@@ -213,7 +213,7 @@ assign_empty_args = function() {
   if (length(iv) == 0){assign("iv", "f", envir = .GlobalEnv)} # Def: do not print imputation progress
   if (length(tz) == 0){assign("tz", "GMT", envir = .GlobalEnv)} # Def: use GMT for the time zone
   if (length(rs) == 0){assign("rs", "f", envir = .GlobalEnv)} # Def: do not use recursive search
-  if (length(fsp) == 0){assign("fsp", NA, envir = .GlobalEnv)} # Def: no search pattern
+  if (length(fsp) == 0){assign("fsp", NULL, envir = .GlobalEnv)} # Def: no search pattern
   if (length(isc) == 0){assign("isc", "f", envir = .GlobalEnv)} # Def: does not ignore search case
   if (length(alt) == 0){assign("alt", "f", envir = .GlobalEnv)} # Def: alternative data provided
   if (length(pmd) == 0){assign("pmd", "f", envir = .GlobalEnv)} # Def: do not preserve missingness
