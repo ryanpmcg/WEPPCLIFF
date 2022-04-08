@@ -660,7 +660,7 @@ create_rate_qc_data = function(data) {
   for (j in 1:length(nm)) {
     VAR = data[[r.loc[j]]][[nm[j]]]
     DUR = data[[r.loc[j]]]$DUR
-    DEL = c(NA, diff(VAR))
+    DEL = c(0, diff(VAR))
     if (length(DEL) == length(VAR)) {data[[r.loc[j]]][[paste(nm[j], "_DEL", sep = "")]] = DEL}
     data[[r.loc[j]]][[paste(nm[j], "_QC", sep = "")]] = rep("PASS", length(VAR))}
   
