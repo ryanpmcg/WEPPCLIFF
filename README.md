@@ -27,7 +27,7 @@ UNIX: From the directory containing WEPPCLIFF.R run: `bash ./AUTOTEST/AutoTest.s
 Windows: From the directory containing WEPPCLIFF.R run: `./AUTOTEST/AutoTest.bat`
 
 ## Current Version
-Version 1.6 is the most recent upload to this repository, which included a major update to support standalone precipitation processing. This is a major step towards supporting direct RUSLE2 formatted model inputs as opposed to just generic erosivity outputs. This new functionality can be accessed via the option: '-cv f'. Some other changes were also rolled into this version. The [Manual](https://github.com/ryanpmcg/WEPPCLIFF/blob/master/Manual.md) has been updated with these changes, though the [WEPPCLIFF Documentation](https://github.com/ryanpmcg/WEPPCLIFF/blob/master/WEPPCLIFF%20Documentation%20(v1.5).pdf) is not planned to be updated until the next major release. Improvements to the gap-filling model (including a comprehensive validation of its capabilities) are planned for the next major release (i.e., WEPPCLIFF v2.0).
+Version 1.7 is the most recent upload to this repository, which included a major update to support automated aggregation of precipitation data. This new functionality can be accessed via the option: '-ai <intervalInMinutes>' as long as 1440 is divisible by the integer. The [Manual](https://github.com/ryanpmcg/WEPPCLIFF/blob/master/Manual.md) has been updated with these changes, though the [WEPPCLIFF Documentation](https://github.com/ryanpmcg/WEPPCLIFF/blob/master/WEPPCLIFF%20Documentation%20(v1.5).pdf) is not planned to be updated until the next major release. Improvements to the gap-filling model (including a comprehensive validation of its capabilities) are planned for the next major release (i.e., WEPPCLIFF v2.0).
 
 ## Contributions
 Contributions are always warmly welcomed. Any contributions that materially improve performance, capabilities, accuracy, compatibility, etc. will be gladly incorporated in the source code, credited, and distributed through this repository. Ideally, contributions should proceed something like the following, but this should not be legalistic in any way:
@@ -58,8 +58,8 @@ WEPPCLIFF is grateful to the open source community and relies on the hard work o
 2. crayon
 3. vctrs
 4. tzdb
-5. vroom
-6. cli
+5. cli
+6. vroom
 7. readr
 8. rlist
 9. iterators
