@@ -2,7 +2,7 @@
 ############################## PROGRAM METADATA #############################
 #############################################################################
 
-#  Version: 1.7
+#  Version: 1.6
 #  Last Updated by: Ryan P. McGehee
 #  Last Updated on: 3 March 2022
 #  Purpose: This program was first designed to create an appropriate input
@@ -39,7 +39,7 @@ ________________________________________________________________________________
 # A function to print a license agreement.
 print_license_agreement = function() {
   LICENSE = {"
-  WEPP Climate File Formatter (WEPPCLIFF) Version 1.7
+  WEPP Climate File Formatter (WEPPCLIFF) Version 1.6
   Copyright (c) 2022 Ryan P. McGehee
 
   This program is free software: you can redistribute it and/or modify
@@ -201,7 +201,6 @@ assign_empty_args = function() {
   if (length(ed) == 0){assign("ed", 0, envir = .GlobalEnv)} # Def: do not export data
   if (length(cp) == 0){assign("cp", "f", envir = .GlobalEnv)} # Def: non-cumulative precipitation data
   if (length(pi) == 0){assign("pi", "f", envir = .GlobalEnv)} # Def: breakpoint format assumed
-  if (length(ai) == 0){assign("ai", "f", envir = .GlobalEnv)} # Def: no aggregation performed
   if (length(cv) == 0){assign("cv", "0.0", envir = .GlobalEnv)} # Def: CLIGEN Version Unspecified
   if (length(sm) == 0){assign("sm", 1, envir = .GlobalEnv)} # Def: continuous simulation mode
   if (length(bf) == 0){assign("bf", 1, envir = .GlobalEnv)} # Def: breakpoint format CLI file
@@ -268,7 +267,6 @@ check_args = function() {
   if (grepl(ed, ed.patterns, ignore.case = T) != T){stop("Invalid Argument: [-ed] must be specified as '0' (off), '1' (all), '2' (rds), '3-6' (precip, daily, storm or breakpoint csv).")}
   if (grepl(cp, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-cp] must be specified as 't' (true) or 'f' (false).")}
   if (grepl(pi, pi.patterns, ignore.case = T) != T){stop("Invalid Argument: [-pi] must be specified as 'f' (false) or an integer up to 1440 (in minutes).")}
-  if (grepl(ai, pi.patterns, ignore.case = T) != T){stop("Invalid Argument: [-ai] must be specified as 'f' (false) or an integer up to 1440 (in minutes).")}
   if (grepl(sm, sm.patterns, ignore.case = T) != T){stop("Invalid Argument: [-sm] must be specified as '1' (continuous) or '2' (event).")}
   if (grepl(bf, bf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-bf] must be specified as '0' (daily) or '1' (breakpoint).")}
   if (grepl(wi, wi.patterns, ignore.case = T) != T){stop("Invalid Argument: [-wi] must be specified as '0' (exclude) or '1' (include).")}
@@ -279,8 +277,7 @@ check_args = function() {
   if (grepl(ipb, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-ipb] must be specified as 't' (true) or 'f' (false).")}
   if (grepl(rtb, rtb.patterns, ignore.case = T) != T){stop("Invalid Argument: [-rtb] must be specified as 'm' (month), 'd' (day), 'h' (hour), or 'f' (false).")}
   if (grepl(alt, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-alt] must be specified as 't' (true) or 'f' (false).")}
-  if (grepl(pmd, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-pmd] must be specified as 't' (true) or 'f' (false).")}
-  if (toupper(ai) != "F") {if (1440 %% as.numeric(ai) > 0) {stop("Invalid Argument: [-ai]; 1440 must be perfectly divisible by the specified integer.")}}}
+  if (grepl(pmd, tf.patterns, ignore.case = T) != T){stop("Invalid Argument: [-pmd] must be specified as 't' (true) or 'f' (false).")}}
 
 
 # A function to assign final values to arguments.
@@ -542,7 +539,7 @@ create_duration_data = function(data, x) {
   
   # Modify midnight breakpoint crossings.
   data[[1]] = modify_midnight_breakpoints(df = data[[1]], dtf = dtf1)
-  
+
   return(data)}
 
 
@@ -580,42 +577,6 @@ modify_midnight_breakpoints = function(df, dtf) {
   df.out = df.out[order(df.out$DT_1),]
   
   return(df.out)}
-
-
-# A function to aggregate precipitation breakpoints to a specific interval.
-aggregate_precip_data = function(data) {
-  
-  # Subset Precipitation Dataframe
-  df = data[[1]]
-  
-  # Create Columns for Clustering
-  minDate = as.Date(substr(min(df$DT_1), 1, 10))
-  maxDate = as.Date(substr(max(df$DT_1), 1, 10))
-  df$Year = as.numeric(substr(df$DT_1, 1, 4))
-  df$Month = as.numeric(substr(df$DT_1, 6, 7))
-  df$Day = as.numeric(substr(df$DT_1, 9, 10))
-  df$Hour = as.numeric(substr(df$DT_1, 12, 13))
-  df$Minute = as.numeric(substr(df$DT_1, 15, 16))
-  df$Cluster = (df$Hour*60 + df$Minute) %/% as.numeric(ai)
-  
-  # Aggregate Data
-  aggDF = aggregate(PRECIP ~ Year + Month + Day + Cluster, data = df, function(x) sum(x, na.rm = T))
-  aggDF$Cluster = aggDF$Cluster*as.numeric(ai)
-  aggDF$Hour = aggDF$Cluster%/%60
-  aggDF$Minute = aggDF$Cluster - aggDF$Hour*60
-  aggDF$DT_1 = as.POSIXct(paste(aggDF$Year, "-", aggDF$Month, "-", aggDF$Day, " ", formatC(aggDF$Hour, width = 2, format = "d", flag = "0"), ":", formatC(aggDF$Minute, width = 2, format = "d", flag = "0"), ":00", sep = ""), format = "%Y-%m-%d %H:%M:%S")
-  aggDF$DT_2 = aggDF$DT_1 - as.numeric(ai)*60
-  
-  # Reformat Output
-  outDF = data.frame(sort(unique(c(aggDF$DT_1, aggDF$DT_2))))
-  names(outDF) = c("DT_1")
-  outDF = merge(outDF, aggDF[,c(5,8)], by = c("DT_1"), all = T)
-  outDF$DUR = as.numeric(ai)
-  outDF$PRECIP[is.na(outDF$PRECIP)] = 0
-  data[[1]] = outDF
-  
-  return(data)
-}
 
 
 # A function to convert units from English to metric.
@@ -1689,33 +1650,19 @@ fill_data = function(data, pcp.ts.in, dly.ts.in, dly.ts.out, pcp.ts.out) {
   imp.ts.df$DT_1 = paste(pcp.ts.df$YYYYMMDD, " ", imp.ts.df$HOUR, ":", imp.ts.df$MINUTE, ":", imp.ts.df$SECOND, sep = "")
   imp.ts.df$DT_1 = as.POSIXct(imp.ts.df$DT_1, format = "%Y%m%d %H:%M:%S")
   imp.ts.df = imp.ts.df[,c(7, 2:3)]
-
+  
   # Change duplicated times.
   continue = T
   counter = 0
-  if (toupper(verb) == "T") {cat(lr,"Recomputing overlapped precipitation events...")}
-  
-  # Combining duplicated precipitation events.
+  if (toupper(verb) == "T") {cat(lr,"Moving duplicated precipitation events...")}
   while (continue == T) {
     counter = counter + 1
     imp.ts.df = imp.ts.df[order(imp.ts.df$DT_1),]
     dup.locs = which(duplicated(imp.ts.df$DT_1) == T)
-    if (length(dup.locs) > 0) {
-      imp.ts.df$PRECIP[dup.locs - 1] = imp.ts.df$PRECIP[dup.locs - 1] + imp.ts.df$PRECIP[dup.locs]
-      imp.ts.df = imp.ts.df[-dup.locs,]
-      pcp.ts.df = pcp.ts.df[-dup.locs,]
-      dup.locs = which(duplicated(imp.ts.df$DT_1) == T)
-    }
+    imp.ts.df$DT_1[dup.locs] = imp.ts.df$DT_1[dup.locs - 1] - imp.ts.df$DUR[dup.locs] * 60
     if (counter == 10000) {continue = F}
     if (length(dup.locs) == 0) {continue = F}}
   
-  # Reducing overlapping durations.
-  lap.time = as.POSIXct(imp.ts.df$DT_1) + imp.ts.df$DUR*60
-  lap.diff = as.numeric(difftime(lap.time, c(as.POSIXct(tail(imp.ts.df$DT_1, nrow(imp.ts.df)-1)), NA), units = "mins"))
-  lap.diff[lap.diff < 0] = 0
-  lap.locs = which(lap.diff > 0)
-  if (length(lap.locs) > 0) {imp.ts.df$DUR[lap.locs] = imp.ts.df$DUR[lap.locs] - lap.diff[lap.locs]}
-
   # Combine precipitation time series data.
   pcp.ts.df = pcp.ts.df[,-c(1:2)]
   pcp.ts.df[,1:3] = imp.ts.df
@@ -2437,7 +2384,7 @@ create_cli_file = function(data, header, export) {
   daily_df = export[[2]]
   pcp_df = data[[pcp.loc]]
   pcp_df$DT_1 = format(as.POSIXct(pcp_df$DT_1), "%Y-%m-%d %H:%M:%S")
-
+  
   # Initialize loop counters.
   current.pcp = 1
   last.pcp = 0
@@ -2596,7 +2543,6 @@ core_workflow = function(file) {
   data = remove_missing_datetime_rows(data)
   data = preserve_missing_data(data, x)
   data = create_duration_data(data, x)
-  if (toupper(ai) != "F") {data = aggregate_precip_data(data)}
   data = convert_units(data)
   data = initialize_qc_data(data)
   if (toupper(qc) == "T"){data = quality_check_inputs(data)}
@@ -2748,7 +2694,7 @@ args = commandArgs(trailingOnly = T)      # User specified arguments (stdin).
 flags = c("fr", "la",
           "d", "o", "e", "p", "l", "f", "fn", "delim", "fsp", "isc", "rs",
           "u", "qc", "id", "pd", "ed", "alt", "pmd",
-          "cp", "pi", "ai", "ei", "ee",
+          "cp", "pi", "ei", "ee",
           "sid", "tth", "dth",
           "qcop", "chkth", "spkth", "strth", "stkth", "rp",
           "im", "io", "qi", "iv",
@@ -2760,7 +2706,7 @@ flags = c("fr", "la",
 flagnames = c("First Run", "License Agreement",
               "Input Directory", "Output Directory", "Export Directory", "Plot Directory", "Library Directory", "Input Filename", "Output Filename", "File Delimiter", "File Search Pattern", "Ignore Search Case", "Recursive Search",
               "Unit Conversion", "Quality Check", "Impute Missing Data", "Plot Data", "Export Data", "Use Alternative Data", "Preserve Missing Data",
-              "Cumulative Precipitation", "Precipitation Interval", "Aggregation Interval", "Calculate Erosion Indices", "Energy Equation(s)",
+              "Cumulative Precipitation", "Precipitation Interval", "Calculate Erosion Indices", "Energy Equation(s)",
               "Storm Identifier", "Storm Separation Time Threshhold", "Storm Separation Depth Threshhold",
               "Quality Checking Option", "Checking Threshold", "Spiking Threshold", "Streaking Threshold", "Sticking Threshold", "Return Period",
               "Impute Method", "Iteration Override", "Quick Impute", "Impute Verbosity",
@@ -2785,17 +2731,17 @@ flagcount = c(1,
               3,
               14,
               20,
-              26,
-              29,
-              35,
-              39,
-              47,
-              51,
-              52)
+              25,
+              28,
+              34,
+              38,
+              46,
+              50,
+              51)
 
 var.e.list = c("lr", "args", flags, "u.loc", "ee.loc", "home.dir", "lib.dir", "package.list", "par.pack.list")
-package.list = c("backports", "crayon", "vctrs", "tzdb", "cli", "vroom", "readr", "rlist", "iterators", "foreach", "doParallel", "EnvStats", "mice", "RcppParallel", "withr", "ggplot2", "profvis", "data.table", "jsonlite")
-par.pack.list = c("backports", "crayon", "vctrs", "tzdb", "cli", "vroom", "readr", "rlist", "EnvStats", "mice", "withr", "ggplot2", "profvis", "data.table", "jsonlite")
+package.list = c("backports", "crayon", "vctrs", "tzdb", "vroom", "cli", "readr", "rlist", "iterators", "foreach", "doParallel", "EnvStats", "mice", "RcppParallel", "withr", "ggplot2", "profvis", "data.table", "jsonlite")
+par.pack.list = c("backports", "crayon", "vctrs", "tzdb", "vroom", "cli", "readr", "rlist", "EnvStats", "mice", "withr", "ggplot2", "profvis", "data.table", "jsonlite")
 function.e.list = c(lsf.str())
 export.list = c(var.e.list, function.e.list)
 
