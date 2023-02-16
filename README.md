@@ -8,7 +8,7 @@ There may be an issue with .cli file creation for gap-filled, fixed-interval pre
 Follow the following steps closely! 
 
 1. Clone this repository to your own preferred location (for Windows, it is recommended to use the C:/ drive).
-2. Install R version 3.6.1 or later (WEPPCLIFF was most recently validated with R-4.1.0).
+2. Install R version 3.6.1 or later (WEPPCLIFF was most recently validated with R-4.2.2).
 3. From the directory containing WEPPCLIFF.R run:
 
 (UNIX) `bash ./INSTALLER/Install.sh`  --OR-- (Windows) `./INSTALLER/Install.bat`
