@@ -4,7 +4,7 @@
 
 #  Version: 1.7
 #  Last Updated by: Ryan P. McGehee
-#  Last Updated on: 3 March 2022
+#  Last Updated on: 15 February 2023
 #  Purpose: This program was first designed to create an appropriate input
 #           climate file (.cli) for a WEPP model run. However, the program
 #           has evolved into a much more advanced and capable tool. See the
@@ -40,7 +40,7 @@ ________________________________________________________________________________
 print_license_agreement = function() {
   LICENSE = {"
   WEPP Climate File Formatter (WEPPCLIFF) Version 1.7
-  Copyright (c) 2022 Ryan P. McGehee
+  Copyright (c) 2023 Ryan P. McGehee
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -501,7 +501,7 @@ create_duration_data = function(data, x) {
     # Convert to datetime (POSIX Count).
     if (length(na.omit(data[[j]][[dt_list[j]]])) == 0) {stop("Datetime data may not be handled correctly. Please check the input file(s) and arguments.")}
     if (length(na.omit(data[[j]][[dt_list[j]]])) > 0) {
-      data[[j]][[dt_list[j]]] = format(as.POSIXct(gsub("T|Z", " ", as.character(data[[j]][[dt_list[j]]])), format = dtf_list[j]), format = dtf_list[j])
+      data[[j]][[dt_list[j]]] = format(as.POSIXct(gsub("T|Z", " ", as.character(data[[j]][[dt_list[j]]])), format = dtf_list[j]), format = "%Y-%m-%d %H:%M:%S")
       data[[j]] = data[[j]][complete.cases(data[[j]][,1]),]}
 
     # Handle precipitation and non-precipitation breaks.
