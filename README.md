@@ -9,7 +9,8 @@ Follow the following steps closely!
 
 1. Clone this repository to your own preferred location (for Windows, it is recommended to use the C:/ drive).
 2. Install R version 3.6.1 or later (WEPPCLIFF was most recently validated with R-4.2.2).
-3. From the directory containing WEPPCLIFF.R run:
+3. If you are using Windows, install the corresponding version of Rtools from [here](https://cran.r-project.org/bin/windows/Rtools/).
+4. From the directory containing WEPPCLIFF.R run:
 
 (UNIX) `bash ./INSTALLER/Install.sh`  --OR-- (Windows) `./INSTALLER/Install.bat`
 
