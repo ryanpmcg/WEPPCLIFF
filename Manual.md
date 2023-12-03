@@ -7,7 +7,7 @@
 
 ## PURPOSE:
 
-	Provide a manual of WEPPCLIFF (v1.6) syntax, which is easily accessible.
+	Provide a manual of WEPPCLIFF (v1.7) syntax, which is easily accessible.
 
 ## NOTES:
 
