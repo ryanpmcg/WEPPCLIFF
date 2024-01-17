@@ -10,7 +10,7 @@ DIR "C:\Program Files\R" /s /b | FIND "bin\Rscript.exe"
 @ECHO If you installed elsewhere, you are responsible for knowing where.
 @ECHO.
 @ECHO off
-SET /p PathToRscript=Enter the path to Rscript here:
+SET /p PathToRscript=Enter the path to Rscript here (do not use quotes even if there is a space in the name; this script will take care of that for you):
 @ECHO on
 @ECHO.
 @ECHO.
