@@ -3,7 +3,7 @@
 ## METADATA:
 
 	Author:		Ryan P. McGehee
-	Modified:	30 April 2020
+	Modified:	17 January 2024
 
 ## PURPOSE:
 
@@ -134,6 +134,10 @@ Change the output filename, add early license agreement, and turn on verbosity.
 Change the output location, turn on graphical output, and trim the period analyzed.
 
 `Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y -verb t -o JUNK -pd t -sdt "2000-01-01 00:00:00" -edt "2004-12-31 24:00:00"`
+
+Use the standalone precipitation processing option (this foregoes the need for non-precipitation data at the expense of gap-filling which would not perform very well for this option compared to other options because there is no multivariate data to build the gap-filling relationships), calculate erosion indices for all 6 ARS energy equations, and export all binary and human readible files supported by WEPPCLIFF.
+
+`Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE_Standalone.csv -la y -verb t -cv f -pd t -verb t -fn KMQE-Standalone -ei t -ee ARS -ed 1`
 
 
 # BREAKPOINT INPUTS:
