@@ -7,7 +7,7 @@ cd ..
 Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y
 Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -fn bpt -la y -verb t
 Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE.csv -la y -verb t -o JUNK -pd t -sdt "2000-01-01 00:00:00" -edt "2004-12-31 24:00:00"
-Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE_Standalone.csv -la y -verb t -cv f -pd t -verb t -fn KMQE-Standalone -ei t -ee ARS -ed 1
+Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE_Standalone.csv -la y -verb t -cv f -pd t -fn KMQE-Standalone -ei t -ee ARS -ed 1
 Rscript --vanilla WEPPCLIFF.R --args -f AH537_BPT_CP.csv -cp t -u m PRECIP -sm 2 -la y -ipb t
 Rscript --vanilla WEPPCLIFF.R --args -f AH537_BPT_CP.csv -cp t -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
 Rscript --vanilla WEPPCLIFF.R --args -f AH537_BPT_IP.csv -cp f -u m PRECIP -sm 2 -la y -verb t -ei t -ee AH537 -ipb t -pd t -ed 3
