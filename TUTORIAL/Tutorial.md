@@ -137,7 +137,7 @@ Change the output location, turn on graphical output, and trim the period analyz
 
 Use the standalone precipitation processing option (this foregoes the need for non-precipitation data at the expense of gap-filling which would not perform very well for this option compared to other options because there is no multivariate data to build the gap-filling relationships), calculate erosion indices for all 6 ARS energy equations, and export all binary and human readible files supported by WEPPCLIFF.
 
-`Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE_Standalone.csv -la y -verb t -cv f -pd t -verb t -fn KMQE-Standalone -ei t -ee ARS -ed 1`
+`Rscript --vanilla WEPPCLIFF.R --args -f ASOS_BPT_KMQE_Standalone.csv -la y -verb t -cv f -pd t -fn KMQE-Standalone -ei t -ee ARS -ed 1`
 
 
 # BREAKPOINT INPUTS:
