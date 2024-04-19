@@ -1,8 +1,8 @@
 # WEPPCLIFF
 An R-based command line tool designed to prepare climate inputs for WEPP, which has been extended to perform other general functions such as quality checking, gap filling, and erosion index calculations (climate inputs for USLE family models). This software was published in the Journal of Open Source Software [![DOI](https://joss.theoj.org/papers/10.21105/joss.02029/status.svg)](https://doi.org/10.21105/joss.02029).
 
-## Important Note -- Updated 15 April 2022
-There may be an issue with .cli file creation for gap-filled, fixed-interval precipitation data (resulting in negative times in the .cli file). This issue will be explored and a correction issued if necessary. Thanks to the community for your patience while the issue (and potential solutions) are explored. 
+## Important Note -- Updated 19 April 2024
+WEPPCLIFF v1.7 is not compatible with the latest version of R and Windows (which have historically had more compatibility issues). The issue stems from certain required packages not being available (at this time) for installation and changes to datetime formatting in one or both of the softwares resulting in incorrectly handled datetime strings. It is recommended to use R v3.6.1 and WEPPCLIFF v1.5, but the user must verify that they have all the packages from the CRAN archive and that they work for their current OS.
 
 ## How to Install
 Follow the following steps closely! 
