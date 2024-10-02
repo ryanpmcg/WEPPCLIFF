@@ -1,8 +1,13 @@
 # WEPPCLIFF
 An R-based command line tool designed to prepare climate inputs for WEPP, which has been extended to perform other general functions such as quality checking, gap filling, and erosion index calculations (climate inputs for USLE family models). This software was published in the Journal of Open Source Software [![DOI](https://joss.theoj.org/papers/10.21105/joss.02029/status.svg)](https://doi.org/10.21105/joss.02029).
 
-## Important Note -- Updated 19 April 2024
-WEPPCLIFF v1.7 is not compatible with the latest version of R and Windows (which have historically had more compatibility issues). The issue stems from certain required packages not being available (at this time) for installation and changes to datetime formatting in one or both of the softwares resulting in incorrectly handled datetime strings. It is recommended to use R v3.6.1 and WEPPCLIFF v1.5 in this case, but the user must verify that they have all the packages from the CRAN archive and that they work for their current OS. Thus, some newer features (beyond WEPPCLIFF v1.5) will not be supported in Windows until there is interest and funding to do so. However, these capabilities continue to be supported on UNIX machines.
+## Important Note -- Updated 1 October 2024
+After many version updates and tests with different machines on various architectures and OSs, I have concluded that after a new device, OS, or R-version release, it is best to wait a few months before attempting to install WEPPCLIFF on those new versions as the required dependencies may or may not be available for the specific combination of hardware, OS, and software (e.g., R). If you encounter an issue with a particular combination, it is best to roll back to an earlier version of R that has been tested with WEPPCLIFF. Here is a list of known working versions for any device or OS I have tested:
+1. WEPPCLIFF v1.7
+   a. R v4.4.1
+   b. R v4.2.2
+2. WEPPCLIFF v1.5
+   a. R v3.6.1
 
 ## How to Install
 Follow the following steps closely! 
