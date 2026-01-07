@@ -1,10 +1,11 @@
 # WEPPCLIFF
 An R-based command line tool designed to prepare climate inputs for WEPP, which has been extended to perform other general functions such as quality checking, gap filling, and erosion index calculations (climate inputs for USLE family models). This software was published in the Journal of Open Source Software [![DOI](https://joss.theoj.org/papers/10.21105/joss.02029/status.svg)](https://doi.org/10.21105/joss.02029).
 
-## Important Note -- Updated 1 October 2024
+## Important Note -- Updated 7 January 2026
 After many version updates and tests with different machines on various architectures and OSs, I have concluded that after a new device, OS, or R-version release, it is best to wait a few months before attempting to install WEPPCLIFF on those new versions as the required dependencies may or may not be available for the specific combination of hardware, OS, and software (e.g., R). If you encounter an issue with a particular combination, it is best to roll back to an earlier version of R that has been tested with WEPPCLIFF. Here is a list of known working versions for any device or OS I have tested:
-1. WEPPCLIFF v1.7 -- (R v4.4.1) -- (R v4.2.2)
-2. WEPPCLIFF v1.5 -- (R v3.6.1)
+1. WEPPCLIFF v1.7.1 -- (R v4.5.2) (tested on UNIX; Windows not yet tested)
+2. WEPPCLIFF v1.7 -- (R v4.4.1) -- (R v4.2.2)
+3. WEPPCLIFF v1.5 -- (R v3.6.1)
 
 ## How to Install
 Follow the following steps closely! 
@@ -24,7 +25,9 @@ UNIX: From the directory containing WEPPCLIFF.R run: `bash ./TUTORIAL/AutoTutori
 
 Windows: From the directory containing WEPPCLIFF.R run: `./TUTORIAL/AutoTutorial.bat`
 
-## Run Automated Test (Installation Validation)
+## Run Automated Test (Installation Validation) *Deprecated*
+You may still attempt automated testing, but without funding support, this function is no longer being maintained due to the minor differences in various OS handling of WEPPCLIFF functionality, which can cause minute differences leading to testing failure. I have not removed this functionality so that advanced users can still compare output from their systems to the benchmarks provided from the original code. Note that these benchmarks are for basic WEPPCLIFF functions and not more advanced functions that were added subsequently to the original release in version 1.5. I would welcome any contribution to bring this capability back in a more user-friendly capacity.
+
 UNIX: From the directory containing WEPPCLIFF.R run: `bash ./AUTOTEST/AutoTest.sh`
 
 Windows: From the directory containing WEPPCLIFF.R run: `./AUTOTEST/AutoTest.bat`
