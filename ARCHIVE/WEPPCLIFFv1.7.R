@@ -2,9 +2,9 @@
 ############################## PROGRAM METADATA #############################
 #############################################################################
 
-#  Version: 1.7.1
+#  Version: 1.7
 #  Last Updated by: Ryan P. McGehee
-#  Last Updated on: 7 January 2026
+#  Last Updated on: 15 February 2023
 #  Purpose: This program was first designed to create an appropriate input
 #           climate file (.cli) for a WEPP model run. However, the program
 #           has evolved into a much more advanced and capable tool. See the
@@ -2794,8 +2794,8 @@ flagcount = c(1,
               52)
 
 var.e.list = c("lr", "args", flags, "u.loc", "ee.loc", "home.dir", "lib.dir", "package.list", "par.pack.list")
-package.list = c("backports", "crayon", "vctrs", "tzdb", "cli", "vroom", "readr", "rlist", "iterators", "foreach", "doParallel", "EnvStats", "mice", "RcppParallel", "withr", "farver", "RColorBrewer", "ggplot2", "profvis", "data.table", "jsonlite")
-par.pack.list = c("backports", "crayon", "vctrs", "tzdb", "cli", "vroom", "readr", "rlist", "EnvStats", "mice", "withr", "farver", "RColorBrewer", "ggplot2", "profvis", "data.table", "jsonlite")
+package.list = c("backports", "crayon", "vctrs", "tzdb", "cli", "vroom", "readr", "rlist", "iterators", "foreach", "doParallel", "EnvStats", "mice", "RcppParallel", "withr", "ggplot2", "profvis", "data.table", "jsonlite")
+par.pack.list = c("backports", "crayon", "vctrs", "tzdb", "cli", "vroom", "readr", "rlist", "EnvStats", "mice", "withr", "ggplot2", "profvis", "data.table", "jsonlite")
 function.e.list = c(lsf.str())
 export.list = c(var.e.list, function.e.list)
 
